@@ -162,8 +162,8 @@ const UserManagement = () => {
             dataIndex: 'role',
             key: 'role',
             render: (role) => {
-                let color = role === 'admin' ? 'red' : role === 'lecturer' ? 'blue' : 'green';
-                let text = role === 'admin' ? 'Quản trị viên' : role === 'lecturer' ? 'Giảng viên' : 'Sinh viên';
+                let color = role === 'admin' ? 'red' : role === 'editor' ? 'orange' : role === 'lecturer' ? 'blue' : 'green';
+                let text = role === 'admin' ? 'Quản trị viên' : role === 'editor' ? 'Quản trị nội dung' : role === 'lecturer' ? 'Giảng viên' : 'Sinh viên';
                 return <Tag color={color}>{text}</Tag>;
             },
         },
@@ -258,6 +258,7 @@ const UserManagement = () => {
                                 <Select>
                                     <Option value="student">Sinh viên</Option>
                                     <Option value="lecturer">Giảng viên</Option>
+                                    <Option value="editor">Quản trị nội dung</Option>
                                     <Option value="admin">Quản trị viên</Option>
                                 </Select>
                             </Form.Item>
@@ -345,7 +346,7 @@ const UserManagement = () => {
                         <li>Cột A: Mã số (MSSV/Mã GV)*</li>
                         <li>Cột B: Họ và Tên</li>
                         <li>Cột C: Email*</li>
-                        <li>Cột D: Vai trò (student hoặc lecturer)*</li>
+                        <li>Cột D: Vai trò (student, lecturer hoặc editor)*</li>
                         <li>Cột E: Khoa / Bộ môn</li>
                         <li>Cột F: Lớp sinh hoạt (dành cho SV)</li>
                         <li>Cột G: Học hàm (dành cho GV)</li>

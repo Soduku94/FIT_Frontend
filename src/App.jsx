@@ -1,45 +1,119 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+// ========================
+//   REACT ROUTER IMPORTS
+// ========================
+import {
+    createBrowserRouter,
+    createRoutesFromElements,
+    Navigate,
+    Outlet,
+    Route,
+    RouterProvider,
+} from 'react-router-dom';
+
+// ========================
+//   LAYOUT & COMPONENTS
+// ========================
+import Navbar from './components/layout/Navbar';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+
+// ========================
+//   PAGES - AUTH
+// ========================
+import ForgotPassword from './pages/auth/ForgotPassword';
 import Login from './pages/Login';
-import AdminLayout from './pages/admin/AdminLayout';
-import CategoryManagement from './pages/admin/CategoryManagement';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import DocumentApproval from './pages/admin/DocumentApproval';
-import UserManagement from './pages/admin/UserManagement';
+import ResetPassword from './pages/auth/ResetPassword';
+
+// ========================
+//   PAGES - CLIENT
+// ========================
+import Home from './pages/client/Home';
 import DocumentDetail from './pages/client/DocumentDetail';
 import Profile from './pages/client/Profile';
-
-import Home from './pages/client/Home';
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import UploadDocument from './pages/client/UploadDocument';
-function App() {
+
+// ========================
+//   PAGES - ADMIN
+// ========================
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminLayout from './pages/admin/AdminLayout';
+import CategoryManagement from './pages/admin/CategoryManagement';
+import DocumentApproval from './pages/admin/DocumentApproval';
+import UserManagement from './pages/admin/UserManagement';
+import About from './pages/client/About';
+import NewsDetail from './pages/client/NewsDetail';
+import CreateNews from './pages/admin/CreateNews';
+import NotFound from './pages/NotFound';
+
+
+// 1. Tạo Layout chung cho các trang của người dùng (Client)
+const ClientLayout = () => {
     return (
-        <Routes>
-            <Route path="/" element={<Home />} />
+        <>
+            <Navbar />  {/* Thanh điều hướng luôn nằm trên */}
+            <Outlet />  {/* Nội dung các trang Home, Profile... sẽ chui vào đây */}
+        </>
+    );
+};
 
-
-            <Route path="/home" element={<Navigate to="/" replace />} />
+const router = createBrowserRouter(
+    createRoutesFromElements(
+        <Route>
+            {/* ==========================================
+                NHÓM 1: CÁC TRANG KHÔNG CẦN NAVBAR
+                (Đăng nhập, Quên mật khẩu, Reset mật khẩu)
+            ========================================== */}
             <Route path="/login" element={<Login />} />
-            <Route path="/document/:id" element={<DocumentDetail />} />
-            {/* KHU VỰC CỦA ADMIN */}
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+
+            {/* ==========================================
+                NHÓM 2: KHU VỰC CLIENT (CÓ NAVBAR)
+            ========================================== */}
+            <Route element={<ClientLayout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/home" element={<Navigate to="/" replace />} />
+                <Route path="/document/:id" element={<DocumentDetail />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/news/:id" element={<NewsDetail />} />
+
+                {/* Các trang cần đăng nhập của Client */}
+                <Route element={<ProtectedRoute allowedRoles={['student', 'lecturer', 'admin', 'editor']} />}>
+                    <Route path="/upload" element={<UploadDocument />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/edit/:id" element={<UploadDocument />} />
+                </Route>
+
+                {/* Các trang dành riêng cho Admin và Editor */}
+                <Route element={<ProtectedRoute allowedRoles={['admin', 'editor']} />}>
+                    <Route path="/editor/news/create" element={<CreateNews />} />
+                </Route>
+            </Route>
+
+            {/* ==========================================
+                NHÓM 3: KHU VỰC ADMIN (CÓ LAYOUT RIÊNG)
+            ========================================== */}
             <Route path="/admin" element={<AdminLayout />}>
                 {/* Tự động nhảy vào dashboard khi gõ /admin */}
                 <Route index element={<Navigate to="/admin/dashboard" replace />} />
 
-                {/* Các trang con (tạm thời để chữ chay, ta sẽ code giao diện sau) */}
+                {/* Các trang con của Admin */}
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="categories" element={<CategoryManagement />} />
                 <Route path="documents" element={<DocumentApproval />} />
                 <Route path="users" element={<UserManagement />} />
             </Route>
-            {/* NHÓM NGƯỜI DÙNG: lecturer và Student */}
-            <Route element={<ProtectedRoute allowedRoles={['student', 'lecturer']} />}>
-                {/*<Route path="/my-documents" element={<MyDocuments />} />*/}
-                <Route path="/upload" element={<UploadDocument />} />
-                <Route path="/profile" element={<Profile />} />
-            </Route>
 
-        </Routes>
-    );
+            {/* ==========================================
+                NHÓM 4: CATCH-ALL ROUTE (404 NOT FOUND)
+            ========================================== */}
+            <Route path="*" element={<NotFound />} />
+        </Route>
+
+    )
+);
+
+function App() {
+    return <RouterProvider router={router} />;
 }
 
 export default App;
