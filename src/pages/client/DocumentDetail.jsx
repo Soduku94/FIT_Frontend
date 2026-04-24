@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Typography, Button, Tag, Spin, message, Breadcrumb, Divider, Row, Col, Card, Descriptions } from 'antd';
 import {
     EyeOutlined, CalendarOutlined, UserOutlined, DownloadOutlined,
-    LeftOutlined, GithubOutlined, FilePdfOutlined, DatabaseOutlined, GlobalOutlined
+    LeftOutlined, GithubOutlined, FilePdfOutlined, DatabaseOutlined, GlobalOutlined,
+    RobotOutlined, ThunderboltOutlined, SyncOutlined
 } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
@@ -15,6 +16,17 @@ const DocumentDetail = () => {
     const navigate = useNavigate();
     const [doc, setDoc] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [aiSummary, setAiSummary] = useState('');
+    const [isAiLoading, setIsAiLoading] = useState(false);
+
+    const handleGenerateAiSummary = () => {
+        setIsAiLoading(true);
+        // Simulate API call for AI summary
+        setTimeout(() => {
+            setAiSummary("Đây là bản tóm tắt tự động do AI tạo ra.\n\nTài liệu này trình bày chi tiết các phương pháp nghiên cứu tiên tiến và kết quả đạt được. Trọng tâm là cải thiện hiệu suất của mô hình và đưa ra các đánh giá khách quan dựa trên tập dữ liệu thực tế.\n\n(Lưu ý: Đây là dữ liệu giả lập hiển thị giao diện UI, tính năng backend sẽ được cập nhật sau).");
+            setIsAiLoading(false);
+        }, 2500);
+    };
 
     const formatAuthors = (authorsData) => {
         if (!authorsData) return 'Đang cập nhật';
@@ -159,6 +171,65 @@ const DocumentDetail = () => {
                                 </Title>
                                 <div className="text-lg text-gray-700 leading-relaxed text-justify whitespace-pre-line bg-gray-50 p-6 border-l-4 border-blue-500 rounded-r-xl italic">
                                     {doc.description || "Tài liệu này hiện chưa có đoạn tóm tắt."}
+                                </div>
+
+                                {/* AI SUMMARY SECTION */}
+                                <div className="mt-10 pt-8 border-t border-gray-100">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                                        <div>
+                                            <Title level={4} className="m-0 text-gray-800 flex items-center gap-2">
+                                                <RobotOutlined className="text-indigo-500" /> AI Trợ lý Tóm tắt
+                                            </Title>
+                                            <p className="text-gray-500 mt-1 text-sm">
+                                                Sử dụng AI để đọc nhanh và tóm tắt những nội dung chính yếu của tài liệu.
+                                            </p>
+                                        </div>
+                                        
+                                        {!aiSummary && (
+                                            <Button 
+                                                type="primary" 
+                                                size="large"
+                                                icon={isAiLoading ? <SyncOutlined spin /> : <ThunderboltOutlined />} 
+                                                onClick={handleGenerateAiSummary}
+                                                disabled={isAiLoading}
+                                                className="bg-gradient-to-r from-indigo-500 to-purple-600 border-0 shadow-md hover:shadow-lg hover:from-indigo-400 hover:to-purple-500 transition-all font-medium whitespace-nowrap"
+                                            >
+                                                {isAiLoading ? 'AI Đang phân tích...' : 'Tóm tắt ngay'}
+                                            </Button>
+                                        )}
+                                    </div>
+
+                                    {aiSummary && (
+                                        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 sm:p-8 rounded-2xl border border-indigo-100 shadow-inner relative overflow-hidden animate-fade-in">
+                                            {/* Decorative blob */}
+                                            <div className="absolute top-0 right-0 w-40 h-40 bg-purple-200 rounded-full blur-3xl opacity-40 -mt-10 -mr-10 pointer-events-none"></div>
+                                            
+                                            <div className="flex flex-col sm:flex-row gap-5 relative z-10">
+                                                <div className="flex-shrink-0">
+                                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-200">
+                                                        <RobotOutlined className="text-2xl" />
+                                                    </div>
+                                                </div>
+                                                <div className="flex-grow">
+                                                    <h5 className="text-indigo-900 font-bold mb-3 text-lg">Bản tóm tắt thông minh</h5>
+                                                    <p className="text-gray-700 leading-relaxed whitespace-pre-line text-base text-justify">
+                                                        {aiSummary}
+                                                    </p>
+                                                    <div className="mt-5 flex gap-3 border-t border-indigo-100/50 pt-4">
+                                                        <Button 
+                                                            size="middle" 
+                                                            className="text-indigo-600 border-indigo-200 hover:border-indigo-400 hover:text-indigo-700 font-medium" 
+                                                            onClick={handleGenerateAiSummary}
+                                                            disabled={isAiLoading}
+                                                            icon={isAiLoading ? <SyncOutlined spin /> : <SyncOutlined />}
+                                                        >
+                                                            {isAiLoading ? 'Đang tạo lại...' : 'Tạo lại bản tóm tắt'}
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {doc.tags && doc.tags.length > 0 && (
