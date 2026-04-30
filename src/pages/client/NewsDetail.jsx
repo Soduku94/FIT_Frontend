@@ -1,96 +1,139 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Typography, Spin, message, Divider } from 'antd';
-import { CalendarOutlined, EyeOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { Layout, Typography, Spin, message, Divider, Avatar, Button, Tag, Space } from 'antd';
+import { CalendarOutlined, ArrowLeftOutlined, UserOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import AppFooter from '../../components/layout/AppFooter';
 
 const { Content, Footer } = Layout;
-const { Title } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 const NewsDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [news, setNews] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [scrollProgress, setScrollProgress] = useState(0);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+        
+        const handleScroll = () => {
+            const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (window.scrollY / totalHeight) * 100;
+            setScrollProgress(progress);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        
         const fetchDetail = async () => {
             try {
                 const response = await api.get(`/public/news/${id}`);
-                // Phụ thuộc vào dữ liệu trả về từ backend, có thể là response.data.news hoặc response.data
                 setNews(response.data.news || response.data);
             } catch (error) {
-                message.error("Không thể tải chi tiết tin tức hoặc bài viết không tồn tại!");
+                message.error("Không thể tải chi tiết tin tức!");
                 navigate('/about');
             } finally {
                 setLoading(false);
             }
         };
+        
         fetchDetail();
+        return () => window.removeEventListener('scroll', handleScroll);
     }, [id, navigate]);
 
     if (loading) {
         return (
-            <Layout className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <Spin size="large" tip="Đang tải chi tiết bài viết..." />
-            </Layout>
+            <div className="min-h-screen bg-white flex flex-col items-center justify-center">
+                <Spin size="large" />
+                <Text className="mt-4 text-gray-400 animate-pulse">Đang chuẩn bị nội dung...</Text>
+            </div>
         );
     }
 
     if (!news) return null;
 
     return (
-        <Layout className="min-h-screen bg-white">
-            <Content className="pt-8 pb-16 animate-fade-in block max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                
-                <div onClick={() => navigate(-1)} className="cursor-pointer text-blue-600 mb-6 inline-flex items-center hover:text-blue-800 transition-colors font-medium">
-                    <ArrowLeftOutlined className="mr-2" /> Quay lại
-                </div>
+        <Layout className="min-h-screen bg-white font-sans antialiased">
+            {/* Thanh tiến trình đọc */}
+            <div 
+                className="fixed top-0 left-0 h-1 bg-blue-600 z-[100] transition-all duration-150" 
+                style={{ width: `${scrollProgress}%` }}
+            />
 
-                {news.category && (
-                    <div className="mb-4">
-                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
-                            {news.category}
+           
+            <Content className="pt-12 pb-24">
+                {/* Header Section */}
+                <div className="max-w-3xl mx-auto px-6 text-center mb-12">
+                    <div className="flex justify-center mb-6">
+                        <span className="text-blue-600 font-bold text-xs tracking-widest uppercase py-1 px-3 bg-blue-50 rounded-full">
+                            {news.category || 'Bản tin khoa'}
                         </span>
                     </div>
-                )}
+                    
+                    <Title level={1} className="text-4xl md:text-5xl font-black text-gray-900 leading-tight mb-8">
+                        {news.title}
+                    </Title>
 
-                <Title className="text-3xl md:text-5xl font-bold mb-4 text-gray-900 leading-tight">
-                    {news.title}
-                </Title>
-
-                <div className="flex flex-wrap items-center gap-4 text-gray-500 mb-8 border-b border-gray-100 pb-6">
-                    <span className="flex items-center">
-                        <CalendarOutlined className="mr-2" /> {news.created_at || 'Đang cập nhật'}
-                    </span>
-                    {news.view_count !== undefined && (
-                        <span className="flex items-center">
-                            <EyeOutlined className="mr-2" /> {news.view_count} lượt xem
-                        </span>
-                    )}
+                    <div className="flex items-center justify-center gap-4 text-gray-500">
+                        <div className="flex items-center gap-2">
+                            <Avatar size={32} icon={<UserOutlined />} className="bg-indigo-100 text-indigo-600" />
+                            <span className="font-semibold text-gray-700">{news.author_name || 'Admin'}</span>
+                        </div>
+                        <div className="w-1 h-1 bg-gray-300 rounded-full" />
+                        <div className="flex items-center gap-1.5">
+                            <CalendarOutlined />
+                            <span>{news.created_at}</span>
+                        </div>
+                    </div>
                 </div>
 
+                {/* Hero Image */}
                 {news.thumbnail_url && (
-                    <div className="mb-10 rounded-2xl overflow-hidden shadow-md">
-                        <img 
-                            src={news.thumbnail_url} 
-                            alt={news.title} 
-                            className="w-full max-h-[500px] object-cover"
-                        />
+                    <div className="max-w-5xl mx-auto px-6 mb-16">
+                        <div className="aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl shadow-blue-100/50">
+                            <img 
+                                src={news.thumbnail_url} 
+                                alt={news.title} 
+                                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                            />
+                        </div>
                     </div>
                 )}
 
-                <div 
-                    className="text-lg text-gray-800 leading-relaxed text-justify prose prose-blue max-w-none"
-                    dangerouslySetInnerHTML={{ __html: news.content || news.excerpt || 'Đang cập nhật nội dung...' }}
-                />
+                {/* Main Content Area */}
+                <article className="max-w-3xl mx-auto px-6">
+                    <div 
+                        className="
+                            news-content
+                            text-xl text-gray-700 leading-[1.8] font-normal text-left break-words
+                            [&>p]:mb-8 [&>p]:last:mb-0
+                            [&_img]:rounded-2xl [&_img]:max-w-full [&_img]:h-auto [&_img]:mx-auto [&_img]:my-10 [&_img]:shadow-xl
+                            [&_h1]:text-3xl [&_h1]:font-black [&_h1]:text-gray-900 [&_h1]:mt-12 [&_h1]:mb-6
+                            [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:text-gray-900 [&_h2]:mt-12 [&_h2]:mb-6
+                            [&_h3]:text-xl [&_h3]:font-bold [&_h3]:text-gray-800 [&_h3]:mt-10 [&_h3]:mb-4
+                            [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-8 [&_ul_li]:mb-3
+                            [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-8 [&_ol_li]:mb-3
+                            [&_blockquote]:border-l-8 [&_blockquote]:border-blue-500 [&_blockquote]:bg-blue-50/30 [&_blockquote]:px-8 [&_blockquote]:py-10 [&_blockquote]:rounded-r-2xl [&_blockquote]:my-12 [&_blockquote]:italic [&_blockquote]:text-gray-600 [&_blockquote]:text-2xl
+                            [&_a]:text-blue-600 [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-blue-800 [&_a]:font-medium
+                            [&_table]:block [&_table]:w-full [&_table]:overflow-x-auto [&_table]:my-10 [&_table]:border-collapse
+                            [&_td]:border [&_td]:border-gray-100 [&_td]:p-4 [&_td]:text-lg
+                            [&_th]:border [&_th]:border-gray-100 [&_th]:p-4 [&_th]:bg-gray-50 [&_th]:font-bold [&_th]:text-left
+                            [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:rounded-3xl [&_iframe]:shadow-xl [&_iframe]:my-12
+                        "
+                        dangerouslySetInnerHTML={{ __html: news.content || news.excerpt }}
+                    />
 
-                <Divider className="my-12" />
+                    <Divider className="my-20" />
 
+                    {/* Footer Info */}
+                    <div className="bg-gray-50 rounded-3xl p-10 flex flex-col md:flex-row items-center justify-between gap-6 border border-gray-100">
+                        
+                    </div>
+                </article>
             </Content>
-            <Footer className="text-center text-gray-500 bg-gray-50 border-t border-gray-200">
-                FIT Research Hub ©2026
-            </Footer>
+
+            <AppFooter />
         </Layout>
     );
 };

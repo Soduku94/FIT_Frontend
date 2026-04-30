@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Typography, Button, Tag, Spin, message, Breadcrumb, Divider, Row, Col, Card, Descriptions } from 'antd';
+import {
+    Layout, Typography, Button, Tag, Spin, message, Breadcrumb, Divider, Row, Col, Card, Descriptions, Modal, Skeleton,
+    Space
+} from 'antd';
 import {
     EyeOutlined, CalendarOutlined, UserOutlined, DownloadOutlined,
     LeftOutlined, GithubOutlined, FilePdfOutlined, DatabaseOutlined, GlobalOutlined,
-    RobotOutlined, ThunderboltOutlined, SyncOutlined
+    RobotOutlined, ThunderboltOutlined, SyncOutlined, LockOutlined, CopyOutlined
 } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import AppFooter from '../../components/layout/AppFooter';
 
 const { Header, Content, Footer } = Layout;
-const { Title, Paragraph } = Typography;
+const { Title, Paragraph, Text } = Typography;
 
 const DocumentDetail = () => {
     const { id } = useParams();
@@ -18,14 +22,45 @@ const DocumentDetail = () => {
     const [loading, setLoading] = useState(true);
     const [aiSummary, setAiSummary] = useState('');
     const [isAiLoading, setIsAiLoading] = useState(false);
+    const [relatedDocs, setRelatedDocs] = useState([]); // Tài liệu cùng chủ đề
+    const [historyDocs, setHistoryDocs] = useState([]); // Lịch sử đã xem
+    const [showPdf, setShowPdf] = useState(false); // Trạng thái hiển thị PDF
+    const [pdfError, setPdfError] = useState(false); // Trạng thái lỗi file PDF
+    const [checkingPdf, setCheckingPdf] = useState(false); // Đang kiểm tra file
 
-    const handleGenerateAiSummary = () => {
+
+
+    const handleTogglePdf = async () => {
+        if (!showPdf && !pdfError) {
+            setCheckingPdf(true);
+            try {
+                const fileUrl = getFullFileUrl(doc.file_url);
+                const response = await fetch(fileUrl, { method: 'HEAD' });
+                if (!response.ok) {
+                    setPdfError(true);
+                }
+            } catch (error) {
+                console.error("Lỗi kiểm tra PDF:", error);
+                // Có thể do CORS hoặc mạng, vẫn cho hiện thử iframe
+            } finally {
+                setCheckingPdf(false);
+                setShowPdf(true);
+            }
+        } else {
+            setShowPdf(!showPdf);
+        }
+    };
+
+    const handleGenerateAiSummary = async () => {
         setIsAiLoading(true);
-        // Simulate API call for AI summary
-        setTimeout(() => {
-            setAiSummary("Đây là bản tóm tắt tự động do AI tạo ra.\n\nTài liệu này trình bày chi tiết các phương pháp nghiên cứu tiên tiến và kết quả đạt được. Trọng tâm là cải thiện hiệu suất của mô hình và đưa ra các đánh giá khách quan dựa trên tập dữ liệu thực tế.\n\n(Lưu ý: Đây là dữ liệu giả lập hiển thị giao diện UI, tính năng backend sẽ được cập nhật sau).");
+        try {
+            const response = await api.get(`/public/documents/${id}/summary`);
+            setAiSummary(response.data.summary);
+        } catch (error) {
+            message.error("Không thể khởi tạo AI lúc này. Vui lòng thử lại sau!");
+        } finally {
             setIsAiLoading(false);
-        }, 2500);
+        }
     };
 
     const formatAuthors = (authorsData) => {
@@ -40,33 +75,77 @@ const DocumentDetail = () => {
         }
         return authorsData;
     };
+    
+    // Hàm bổ trợ để lấy URL đầy đủ của file từ Backend
+    const getFullFileUrl = (url, isDownload = false) => {
+        if (!url) return "";
+        let finalUrl = url.startsWith('http') ? url : `http://localhost:5000${url.startsWith('/') ? '' : '/'}${url}`;
+        if (isDownload) {
+            finalUrl += (finalUrl.includes('?') ? '&' : '?') + 'download=true';
+        }
+        return finalUrl;
+    };
+
+    // Hàm xử lý tải xuống có kiểm tra đăng nhập
+    const handleDownloadClick = () => {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+            Modal.info({
+                title: 'Yêu cầu đăng nhập',
+                icon: <LockOutlined style={{ color: '#ff4d4f' }} />,
+                content: (
+                    <div>
+                        <p>Bạn cần đăng nhập tài khoản để có thể tải tài liệu về máy.</p>
+                        <p className="text-gray-400 text-sm italic">Khách vãng lai chỉ được phép xem trực tiếp trên trình duyệt.</p>
+                    </div>
+                ),
+                okText: 'Đăng nhập ngay',
+                okButtonProps: { className: 'bg-blue-600' },
+                onOk: () => navigate('/login'),
+                maskClosable: true,
+            });
+            return;
+        }
+
+        // Nếu đã đăng nhập thì mở link tải
+        window.open(getFullFileUrl(doc.file_url, true), '_blank');
+    };
 
     useEffect(() => {
         const fetchDetail = async () => {
             try {
-                const viewedDocs = JSON.parse(localStorage.getItem('viewedDocs')) || [];
-                const hasViewed = viewedDocs.includes(id);
+                // 1. Lấy chi tiết tài liệu
+                const response = await api.get(`/public/documents/${id}?increase_view=true`);
+                const documentData = response.data.document;
+                setDoc(documentData);
 
-                const url = hasViewed
-                    ? `/public/documents/${id}`
-                    : `/public/documents/${id}?increase_view=true`;
+                // 2. Lưu vào lịch sử đã xem (localStorage)
+                const savedHistory = JSON.parse(localStorage.getItem('view_history')) || [];
+                // Lọc bỏ bài hiện tại nếu đã có trong lịch sử để đưa lên đầu
+                const updatedHistory = [
+                    { id: documentData.id, title: documentData.title, category_name: documentData.category_name, doc_type: documentData.doc_type },
+                    ...savedHistory.filter(item => item.id !== documentData.id)
+                ].slice(0, 10); // Chỉ giữ lại 10 bài gần nhất
+                
+                localStorage.setItem('view_history', JSON.stringify(updatedHistory));
+                setHistoryDocs(updatedHistory.filter(item => item.id !== documentData.id)); // Hiển thị các bài KHÁC bài hiện tại
 
-                const response = await api.get(url);
-                setDoc(response.data.document);
+                // 3. Lấy tài liệu liên quan (cùng category)
+                const relatedRes = await api.get(`/public/documents?type=${documentData.doc_type}&limit=4`);
+                setRelatedDocs(relatedRes.data.documents.filter(d => d.id !== documentData.id));
 
-                if (!hasViewed) {
-                    viewedDocs.push(id);
-                    localStorage.setItem('viewedDocs', JSON.stringify(viewedDocs));
-                }
             } catch (error) {
-                message.error("Không thể tải chi tiết tài liệu hoặc tài liệu không tồn tại!");
+                message.error("Không thể tải chi tiết tài liệu!");
                 navigate('/');
             } finally {
                 setLoading(false);
             }
         };
         fetchDetail();
+        window.scrollTo(0, 0);
     }, [id, navigate]);
+
 
     if (loading) {
         return (
@@ -82,13 +161,7 @@ const DocumentDetail = () => {
 
     return (
         <Layout className="min-h-screen bg-gray-50">
-            {/* THANH NAVBAR NHỎ */}
-            {/* <Header className="bg-white shadow-sm flex items-center px-4 sm:px-10 z-10 h-16 relative">
-                <Button type="text" icon={<LeftOutlined/>} onClick={() => navigate(-1)}
-                        className="font-medium text-gray-600">
-                    Trở về
-                </Button>
-            </Header> */}
+         
 
             <Content className="pb-16 animate-fade-in block">
                 {/* HERO BANNER SECTION */}
@@ -173,64 +246,30 @@ const DocumentDetail = () => {
                                     {doc.description || "Tài liệu này hiện chưa có đoạn tóm tắt."}
                                 </div>
 
-                                {/* AI SUMMARY SECTION */}
-                                <div className="mt-10 pt-8 border-t border-gray-100">
-                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-                                        <div>
-                                            <Title level={4} className="m-0 text-gray-800 flex items-center gap-2">
-                                                <RobotOutlined className="text-indigo-500" /> AI Trợ lý Tóm tắt
+                                {isPaper && doc.citation && (
+                                    <div className="mt-8 pt-8 border-t border-gray-100">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <Title level={4} className="text-gray-800 m-0 flex items-center gap-2">
+                                                Trích dẫn học thuật (Citation)
                                             </Title>
-                                            <p className="text-gray-500 mt-1 text-sm">
-                                                Sử dụng AI để đọc nhanh và tóm tắt những nội dung chính yếu của tài liệu.
-                                            </p>
-                                        </div>
-                                        
-                                        {!aiSummary && (
                                             <Button 
-                                                type="primary" 
-                                                size="large"
-                                                icon={isAiLoading ? <SyncOutlined spin /> : <ThunderboltOutlined />} 
-                                                onClick={handleGenerateAiSummary}
-                                                disabled={isAiLoading}
-                                                className="bg-gradient-to-r from-indigo-500 to-purple-600 border-0 shadow-md hover:shadow-lg hover:from-indigo-400 hover:to-purple-500 transition-all font-medium whitespace-nowrap"
+                                                icon={<CopyOutlined />} 
+                                                size="small"
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(doc.citation);
+                                                    message.success("Đã sao chép trích dẫn!");
+                                                }}
                                             >
-                                                {isAiLoading ? 'AI Đang phân tích...' : 'Tóm tắt ngay'}
+                                                Sao chép
                                             </Button>
-                                        )}
-                                    </div>
-
-                                    {aiSummary && (
-                                        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 sm:p-8 rounded-2xl border border-indigo-100 shadow-inner relative overflow-hidden animate-fade-in">
-                                            {/* Decorative blob */}
-                                            <div className="absolute top-0 right-0 w-40 h-40 bg-purple-200 rounded-full blur-3xl opacity-40 -mt-10 -mr-10 pointer-events-none"></div>
-                                            
-                                            <div className="flex flex-col sm:flex-row gap-5 relative z-10">
-                                                <div className="flex-shrink-0">
-                                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-200">
-                                                        <RobotOutlined className="text-2xl" />
-                                                    </div>
-                                                </div>
-                                                <div className="flex-grow">
-                                                    <h5 className="text-indigo-900 font-bold mb-3 text-lg">Bản tóm tắt thông minh</h5>
-                                                    <p className="text-gray-700 leading-relaxed whitespace-pre-line text-base text-justify">
-                                                        {aiSummary}
-                                                    </p>
-                                                    <div className="mt-5 flex gap-3 border-t border-indigo-100/50 pt-4">
-                                                        <Button 
-                                                            size="middle" 
-                                                            className="text-indigo-600 border-indigo-200 hover:border-indigo-400 hover:text-indigo-700 font-medium" 
-                                                            onClick={handleGenerateAiSummary}
-                                                            disabled={isAiLoading}
-                                                            icon={isAiLoading ? <SyncOutlined spin /> : <SyncOutlined />}
-                                                        >
-                                                            {isAiLoading ? 'Đang tạo lại...' : 'Tạo lại bản tóm tắt'}
-                                                        </Button>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
-                                    )}
-                                </div>
+                                        <div className="bg-gray-50 p-6 rounded-xl border border-dashed border-gray-300 font-mono text-sm text-gray-600 relative group">
+                                            {doc.citation}
+                                        </div>
+                                    </div>
+                                )}
+
+
 
                                 {doc.tags && doc.tags.length > 0 && (
                                     <div className="mt-10 pt-8 border-t border-gray-100">
@@ -245,10 +284,10 @@ const DocumentDetail = () => {
                             </div>
                         </Col>
 
-                        {/* CỘT PHẢI: NÚT TẢI XUỐNG */}
+                        {/* CỘT PHẢI: NÚT TẢI XUỐNG & AI */}
                         <Col xs={24} lg={8}>
-                            <div className="sticky top-24">
-                                <Card className="rounded-2xl shadow-xl border-0 overflow-hidden" bodyStyle={{ padding: 0 }}>
+                            <div className="space-y-6">
+                                <Card className="rounded-2xl shadow-2xl border-0 overflow-hidden hover:shadow-blue-100 transition-all duration-500" bodyStyle={{ padding: 0 }}>
                                     {/* Card Header with mild gradient and icon */}
                                     <div className={`p-8 text-center ${isPaper ? 'bg-gradient-to-br from-blue-50 to-blue-100' : 'bg-gradient-to-br from-purple-50 to-purple-100'} border-b border-gray-100`}>
                                         <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center text-3xl shadow-md ${isPaper ? 'bg-white text-blue-600' : 'bg-white text-purple-600'}`}>
@@ -266,19 +305,11 @@ const DocumentDetail = () => {
                                                 size="large"
                                                 icon={<DownloadOutlined className="text-lg" />}
                                                 className={`w-full h-14 text-base font-medium border-0 shadow-lg transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 ${isPaper ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500' : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500'} text-white`}
-                                                onClick={() => {
-                                                    let finalUrl = doc.file_url;
-                                                    if (finalUrl.startsWith('http//')) {
-                                                        finalUrl = finalUrl.replace('http//', 'http://');
-                                                    }
-                                                    if (!finalUrl.startsWith('http')) {
-                                                        finalUrl = `http://localhost:5000${finalUrl.startsWith('/') ? '' : '/'}${finalUrl}`;
-                                                    }
-                                                    window.open(finalUrl, '_blank');
-                                                }}
+                                                onClick={handleDownloadClick}
                                             >
                                                 {isPaper ? 'Tải PDF (Toàn văn)' : 'Tải ZIP (Dataset)'}
                                             </Button>
+
                                         ) : (
                                             <Button size="large" disabled className="w-full h-14 bg-gray-50 font-medium">Chưa có file đính kèm cục bộ</Button>
                                         )}
@@ -318,14 +349,232 @@ const DocumentDetail = () => {
                                         </div>
                                     </div>
                                 </Card>
+
+                                {/* AI SUMMARY SECTION */}
+                                <Card className="rounded-2xl shadow-2xl border-0 overflow-hidden bg-gradient-to-br from-white to-indigo-50/30 hover:shadow-indigo-100 transition-all duration-500">
+                                    <div className="p-6">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
+                                                <RobotOutlined className="text-xl" />
+                                            </div>
+                                            <div>
+                                                <Title level={5} className="m-0 text-gray-800">AI Trợ lý Tóm tắt</Title>
+                                                <p className="text-gray-500 text-xs m-0">Đọc nhanh nội dung chính</p>
+                                            </div>
+                                        </div>
+
+                                        {isAiLoading ? (
+                                            <div className="space-y-4 py-2">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <SyncOutlined spin className="text-indigo-500" />
+                                                    <span className="text-xs font-bold text-indigo-600 uppercase tracking-tighter">AI đang phân tích tài liệu...</span>
+                                                </div>
+                                                <Skeleton active paragraph={{ rows: 4 }} title={false} />
+                                            </div>
+                                        ) : !aiSummary ? (
+                                            <div className="bg-white/60 backdrop-blur-sm p-4 rounded-xl border border-indigo-50 text-center">
+                                                <p className="text-gray-600 text-sm mb-4">Bạn muốn nắm bắt nhanh ý chính của tài liệu này?</p>
+                                                <Button
+                                                    type="primary"
+                                                    block
+                                                    size="middle"
+                                                    icon={<ThunderboltOutlined />}
+                                                    onClick={handleGenerateAiSummary}
+                                                    className="bg-gradient-to-r from-indigo-500 to-purple-600 border-0 shadow-md hover:shadow-lg transition-all font-medium h-10"
+                                                >
+                                                    Tóm tắt thông minh
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <div className="animate-fade-in space-y-5">
+                                                {/* CẤU TRÚC TÓM TẮT CHUYÊN NGHIỆP */}
+                                                <div className="space-y-4">
+                                                    <div className="relative pl-4 border-l-2 border-indigo-500">
+                                                        <Text className="block text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">Mục tiêu chính</Text>
+                                                        <p className="text-gray-700 text-sm leading-relaxed m-0 animate-typewriter">{aiSummary.objective}</p>
+                                                    </div>
+                                                    
+                                                    <div className="relative pl-4 border-l-2 border-purple-400">
+                                                        <Text className="block text-[10px] font-black text-purple-500 uppercase tracking-widest mb-1">Phương pháp</Text>
+                                                        <p className="text-gray-700 text-sm leading-relaxed m-0">{aiSummary.methodology}</p>
+                                                    </div>
+
+                                                    <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
+                                                        <Text className="block text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                                            <ThunderboltOutlined className="text-xs" /> Kết quả nổi bật
+                                                        </Text>
+                                                        <ul className="m-0 pl-4 space-y-1.5">
+                                                            {aiSummary.key_findings && aiSummary.key_findings.map((item, i) => (
+                                                                <li key={i} className="text-gray-700 text-sm leading-snug list-disc">{item}</li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+
+                                                <Button 
+                                                    type="link" 
+                                                    block
+                                                    size="small"
+                                                    icon={<SyncOutlined />}
+                                                    onClick={handleGenerateAiSummary}
+                                                    className="text-indigo-600 hover:text-indigo-700 text-[10px] font-bold p-0 uppercase"
+                                                >
+                                                    Tạo lại bản tóm tắt
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </Card>
                             </div>
+
+
                         </Col>
                     </Row>
+
+                    {/* PHẦN 2.5: TRÌNH ĐỌC PDF TRỰC TIẾP */}
+                    {isPaper && doc.file_url && (
+                        <div className="mt-16 animate-fade-in">
+                            <div className="flex items-center justify-between mb-8">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-1.5 h-8 bg-red-500 rounded-full"></div>
+                                    <Title level={3} className="m-0 text-gray-800">Đọc trực tiếp</Title>
+                                </div>
+                                <Button 
+                                    type={showPdf ? "default" : "primary"}
+                                    icon={checkingPdf ? <SyncOutlined spin /> : <FilePdfOutlined />}
+                                    loading={checkingPdf}
+                                    onClick={handleTogglePdf}
+                                    className={showPdf ? "" : "bg-red-500 border-red-500 hover:bg-red-600 hover:border-red-600 shadow-md"}
+                                >
+                                    {showPdf ? "Đóng trình đọc" : "Mở trình đọc PDF"}
+                                </Button>
+                            </div>
+                            
+                            {showPdf && pdfError ? (
+                                <div className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-16 text-center shadow-inner">
+                                    <div className="w-20 h-20 bg-orange-50 text-orange-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">
+                                        <FilePdfOutlined />
+                                    </div>
+                                    <Title level={4} className="text-gray-800 mb-2">Tài liệu tạm thời không khả dụng</Title>
+                                    <Paragraph className="text-gray-500 max-w-md mx-auto mb-8">
+                                        Rất tiếc, tệp tin PDF này không được tìm thấy trên máy chủ hoặc đường dẫn đã thay đổi. 
+                                        Bạn có thể thử tải về trực tiếp hoặc liên hệ quản trị viên.
+                                    </Paragraph>
+                                    <Space size="middle">
+                                        <Button 
+                                            icon={<DownloadOutlined />} 
+                                            onClick={handleDownloadClick}
+                                            className="h-11 px-6 rounded-lg font-medium"
+                                        >
+                                            Thử tải về máy
+                                        </Button>
+                                        <Button 
+                                            type="primary" 
+                                            danger
+                                            ghost
+                                            className="h-11 px-6 rounded-lg font-medium"
+                                        >
+                                            Báo cáo lỗi file
+                                        </Button>
+                                    </Space>
+                                </div>
+                            ) : showPdf ? (
+                                <div className="bg-gray-50 rounded-2xl overflow-hidden shadow-2xl border-8 border-white h-[800px] relative">
+                                    <iframe
+                                        src={`${getFullFileUrl(doc.file_url)}#toolbar=0`}
+                                        width="100%"
+                                        height="100%"
+                                        className="border-0"
+                                        title="PDF Preview"
+                                    ></iframe>
+                                </div>
+                            ) : (
+                                <div 
+                                    onClick={handleTogglePdf}
+                                    className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-12 text-center cursor-pointer hover:shadow-xl transition-all group overflow-hidden relative border border-blue-100"
+                                >
+                                    <div className="absolute inset-0 opacity-20 pointer-events-none">
+                                        <FilePdfOutlined className="text-[300px] -rotate-12 translate-x-1/2 text-blue-200" />
+                                    </div>
+                                    <div className="relative z-10">
+                                        <div className="w-20 h-20 bg-red-500 rounded-2xl flex items-center justify-center text-white text-4xl mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                                            <FilePdfOutlined />
+                                        </div>
+                                        <Title level={4} className="text-gray-800 mb-2">Xem toàn văn bài báo</Title>
+                                        <Paragraph className="text-gray-500 max-w-md mx-auto">Bạn có thể xem trực tiếp nội dung bài báo khoa học ngay tại đây mà không cần tải về máy.</Paragraph>
+                                        <Button className="mt-6 border-red-500 text-red-500 hover:text-white hover:bg-red-500 transition-all rounded-full px-8">Bắt đầu đọc ngay</Button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* PHẦN 3: TÀI LIỆU LIÊN QUAN & LỊCH SỬ */}
+                    <div className="mt-20">
+                        {relatedDocs.length > 0 && (
+                            <div className="mb-16">
+                                <div className="flex items-center gap-3 mb-8">
+                                    <div className="w-1.5 h-8 bg-blue-600 rounded-full"></div>
+                                    <Title level={3} className="m-0 text-gray-800">Tài liệu cùng chủ đề</Title>
+                                </div>
+                                <Row gutter={[24, 24]}>
+                                    {relatedDocs.map(item => (
+                                        <Col xs={24} sm={12} md={6} key={item.id}>
+                                            <Card
+                                                hoverable
+                                                className="rounded-xl border-gray-100 shadow-sm hover:shadow-md transition-all h-full"
+                                                onClick={() => navigate(`/document/${item.id}`)}
+                                                bodyStyle={{ padding: '16px' }}
+                                            >
+                                                <Tag color={item.doc_type === 'paper' ? 'blue' : 'purple'} className="mb-2 text-[10px] uppercase font-bold border-0">
+                                                    {item.category_name}
+                                                </Tag>
+                                                <Title level={5} className="text-sm line-clamp-2 mb-4 h-10 hover:text-blue-600">
+                                                    {item.title}
+                                                </Title>
+                                                <div className="flex justify-between items-center text-[10px] text-gray-400">
+                                                    <span><CalendarOutlined /> {item.created_at}</span>
+                                                    <span><EyeOutlined /> {item.view_count || 0}</span>
+                                                </div>
+                                            </Card>
+                                        </Col>
+                                    ))}
+                                </Row>
+                            </div>
+                        )}
+
+                        {historyDocs.length > 0 && (
+                            <div>
+                                <div className="flex items-center gap-3 mb-8">
+                                    <div className="w-1.5 h-8 bg-gray-400 rounded-full"></div>
+                                    <Title level={3} className="m-0 text-gray-800">Tài liệu bạn đã xem</Title>
+                                </div>
+                                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                                    {historyDocs.map(item => (
+                                        <div 
+                                            key={item.id} 
+                                            onClick={() => navigate(`/document/${item.id}`)}
+                                            className="min-w-[280px] bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md cursor-pointer transition-all flex flex-col justify-between"
+                                        >
+                                            <Title level={5} className="text-sm line-clamp-2 mb-3 text-gray-700">
+                                                {item.title}
+                                            </Title>
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-[10px] text-blue-500 font-medium px-2 py-0.5 bg-blue-50 rounded">
+                                                    {item.category_name}
+                                                </span>
+                                                <Text type="secondary" className="text-[10px]">Xem lại →</Text>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </Content>
-            <Footer className="text-center text-gray-500 bg-white border-t border-gray-200">
-                FIT Research Hub ©2026
-            </Footer>
+
+            <AppFooter />
         </Layout>
     );
 };

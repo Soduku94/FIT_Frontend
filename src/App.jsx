@@ -43,6 +43,8 @@ import About from './pages/client/About';
 import NewsDetail from './pages/client/NewsDetail';
 import CreateNews from './pages/admin/CreateNews';
 import NotFound from './pages/NotFound';
+import FacultyLanding from './pages/client/FacultyLanding';
+import Notifications from './pages/client/Notifications';
 
 
 // 1. Tạo Layout chung cho các trang của người dùng (Client)
@@ -74,6 +76,8 @@ const router = createBrowserRouter(
                 <Route path="/home" element={<Navigate to="/" replace />} />
                 <Route path="/document/:id" element={<DocumentDetail />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/events" element={<FacultyLanding />} />
+                <Route path="/news" element={<Notifications />} />
                 <Route path="/news/:id" element={<NewsDetail />} />
 
                 {/* Các trang cần đăng nhập của Client */}

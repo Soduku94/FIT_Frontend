@@ -19,6 +19,7 @@ import {
 import { UserOutlined, EditOutlined, FileTextOutlined, BookOutlined, SettingOutlined, MailOutlined, BankOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import AppFooter from '../../components/layout/AppFooter';
 
 const { Title, Text } = Typography;
 
@@ -289,6 +290,7 @@ const Profile = () => {
                     </Form.Item>
                 </Form>
             </Modal>
+            <AppFooter />
         </div>
 
     );

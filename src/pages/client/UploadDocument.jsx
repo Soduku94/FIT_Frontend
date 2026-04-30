@@ -9,7 +9,8 @@ import {
     DatabaseOutlined
 } from '@ant-design/icons';
 
-import api from '../../services/api'; // Đường dẫn api của bạn
+import api from '../../services/api';
+import AppFooter from '../../components/layout/AppFooter'; // Đường dẫn api của bạn
 
 import { useNavigate, useBlocker } from 'react-router-dom';
 const { Title, Text } = Typography;
@@ -123,6 +124,7 @@ const UploadDocument = () => {
         // Biến mảng authors và tags thành chuỗi JSON để Backend đọc được
         formData.append('authors', JSON.stringify(values.authors || []));
         formData.append('tags', JSON.stringify(values.tags || []));
+        if (values.citation) formData.append('citation', values.citation);
 
         // 2. Gắn các trường đặc thù
         if (selectedDocType === 'paper') {
@@ -308,6 +310,14 @@ const UploadDocument = () => {
                             <TextArea rows={5} placeholder="Nhập tóm tắt nội dung tài liệu..." />
                         </Form.Item>
 
+                        {selectedDocType === 'paper' && (
+                            <Form.Item name="citation"
+                                label={<span className="font-medium">Trích dẫn học thuật (Citation)</span>}
+                                tooltip="Dán định dạng trích dẫn chuẩn (APA, IEEE...) để người khác dễ dàng tham chiếu.">
+                                <TextArea rows={3} placeholder="VD: Nguyen, A. V. (2024). Tên bài báo... " />
+                            </Form.Item>
+                        )}
+
                         <Form.Item label={<span className="font-medium text-lg">Đính kèm File</span>} className="mt-8">
                             <Dragger {...uploadProps} className="bg-white hover:border-blue-500 transition-colors">
                                 <p className="ant-upload-drag-icon text-blue-500">
@@ -373,6 +383,7 @@ const UploadDocument = () => {
                     </Form>
                 </Card>
             </div>
+            <AppFooter />
         </div>
     );
 };

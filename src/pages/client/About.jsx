@@ -3,6 +3,7 @@ import { Typography, Row, Col, Card, Tag, Spin, message, Button } from 'antd';
 import { CalendarOutlined, TrophyOutlined, TeamOutlined, ReadOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import AppFooter from '../../components/layout/AppFooter';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -27,48 +28,18 @@ const About = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 pb-16">
-            {/* KHU VỰC HERO: GIỚI THIỆU KHOA */}
-            <div className="bg-blue-800 text-white py-20 px-4 text-center">
-                <div className="max-w-4xl mx-auto animate-fade-in-up">
-                    <Title style={{ color: 'white' }} level={1}>Khoa Công Nghệ Thông Tin</Title>
-                    <Paragraph className="text-blue-100 text-lg mt-4 text-justify sm:text-center">
-                        Tự hào là một trong những đơn vị đào tạo và nghiên cứu hàng đầu. Chúng tôi kiến tạo môi trường học thuật sáng tạo, gắn kết chặt chẽ với doanh nghiệp, trang bị cho sinh viên nền tảng vững chắc để kiến tạo tương lai số.
+            <div className="bg-white border-b border-gray-200 py-12 px-4 mb-10">
+                <div className="max-w-6xl mx-auto">
+                    <Title level={1} className="m-0 text-gray-900 font-black">Tin tức & Sự kiện</Title>
+                    <Paragraph className="text-gray-500 text-lg mt-2 m-0">
+                        Nơi cập nhật những hoạt động, nghiên cứu và thành tựu mới nhất từ đại gia đình Khoa CNTT.
                     </Paragraph>
-
-                    <Row gutter={[24, 24]} className="mt-12 justify-center">
-                        <Col xs={12} md={6}>
-                            <div className="p-4 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20">
-                                <TeamOutlined className="text-4xl text-blue-300 mb-2" />
-                                <Title level={3} className="m-0 text-white">50+</Title>
-                                <Text className="text-blue-200">Giảng viên/Tiến sĩ</Text>
-                            </div>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <div className="p-4 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20">
-                                <ReadOutlined className="text-4xl text-blue-300 mb-2" />
-                                <Title level={3} className="m-0 text-white">1000+</Title>
-                                <Text className="text-blue-200">Đồ án & Bài báo</Text>
-                            </div>
-                        </Col>
-                        <Col xs={24} md={6}>
-                            <div className="p-4 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20">
-                                <TrophyOutlined className="text-4xl text-yellow-400 mb-2" />
-                                <Title level={3} className="m-0 text-white">Top 1</Title>
-                                <Text className="text-blue-200">Thành tích NCKH</Text>
-                            </div>
-                        </Col>
-                    </Row>
                 </div>
             </div>
 
             {/* KHU VỰC TIN TỨC & THÀNH TÍCH */}
-            <div className="max-w-6xl mx-auto px-4 mt-16">
-                <div className="flex justify-between items-end mb-8 border-b border-gray-200 pb-4">
-                    <div>
-                        <Title level={2} className="m-0 text-gray-800">Tin tức & Sự kiện</Title>
-                        <Text type="secondary">Cập nhật những hoạt động và thành tựu mới nhất của khoa</Text>
-                    </div>
-                </div>
+            <div className="max-w-6xl mx-auto px-4 mt-8">
+            
 
                 {loading ? (
                     <div className="flex justify-center py-20"><Spin size="large" tip="Đang tải tin tức..." /></div>
@@ -119,6 +90,7 @@ const About = () => {
                     </Row>
                 )}
             </div>
+            <AppFooter />
         </div>
     );
 };

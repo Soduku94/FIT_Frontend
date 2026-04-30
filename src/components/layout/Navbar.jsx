@@ -87,16 +87,12 @@ const Navbar = () => {
                 className="flex-grow justify-center border-none hidden md:flex px-10"
                 items={[
                     { key: '/', label: 'Trang chủ' },
-                    { key: '/about', label: 'Về khoa' },
-                    { key: '/events', label: 'Sự kiện' },
-                    { key: '/news', label: 'Tin tức' },
+                    { key: '/about', label: 'Tin tức & Sự kiện' },
+                    { key: '/events', label: 'Về Khoa' },
+                    { key: '/news', label: 'Thông báo ' },
                 ]}
                 onClick={({ key }) => {
-                    if (key === '/events' || key === '/news') {
-                        navigate('/about');
-                    } else {
-                        navigate(key);
-                    }
+                    navigate(key);
                 }}
 
             />
