@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Typography, Row, Col, Button, Card, Divider, Space, Timeline } from 'antd';
 import { 
     TrophyOutlined, TeamOutlined, GlobalOutlined, RocketOutlined, 
@@ -10,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 const { Title, Text, Paragraph } = Typography;
 
 const FacultyLanding = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     return (
@@ -28,23 +30,23 @@ const FacultyLanding = () => {
 
                 <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
                     <div className="inline-block px-4 py-1 rounded-full bg-blue-500/20 backdrop-blur-md border border-blue-400/30 mb-6 animate-fade-in">
-                        <Text className="text-blue-300 font-bold tracking-widest uppercase text-xs">Chào mừng bạn đến với</Text>
+                        <Text className="text-blue-300 font-bold tracking-widest uppercase text-xs">{t('faculty.hero.welcome')}</Text>
                     </div>
                     <Title className="text-white m-0 text-5xl md:text-7xl font-black mb-6 tracking-tighter animate-fade-in-up">
-                        KHOA CÔNG NGHỆ <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">THÔNG TIN</span>
+                        {t('faculty.hero.title_line1')} <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">{t('faculty.hero.title_line2')}</span>
                     </Title>
                     <Paragraph className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto mb-10 opacity-90 animate-fade-in-up delay-200">
-                        Nơi khơi nguồn đam mê, kiến tạo tương lai số và khẳng định vị thế dẫn đầu trong đào tạo nghiên cứu công nghệ.
+                        {t('faculty.hero.description')}
                     </Paragraph>
-                    <Space size="large" className="animate-fade-in-up delay-300">
-                        <Button type="primary" size="large" className="h-14 px-10 rounded-full bg-blue-600 border-none text-lg font-bold shadow-xl shadow-blue-500/20 hover:scale-105 transition-transform" onClick={() => navigate('/')}>
-                            Khám phá ngay
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up delay-300">
+                        <Button type="primary" size="large" className="w-full sm:w-auto h-14 px-10 rounded-full bg-blue-600 border-none text-lg font-bold shadow-xl shadow-blue-500/20 hover:scale-105 transition-transform" onClick={() => navigate('/')}>
+                            {t('faculty.hero.explore_btn')}
                         </Button>
-                        <Button ghost size="large" className="h-14 px-10 rounded-full border-2 text-lg font-bold hover:bg-white hover:text-blue-900 transition-all">
-                            Liên hệ tư vấn
+                        <Button ghost size="large" className="w-full sm:w-auto h-14 px-10 rounded-full border-2 text-lg font-bold hover:bg-white hover:text-blue-900 transition-all">
+                            {t('faculty.hero.contact_btn')}
                         </Button>
-                    </Space>
+                    </div>
                 </div>
 
                 {/* Scroll Down Indicator */}
@@ -58,18 +60,18 @@ const FacultyLanding = () => {
                 <div className="max-w-7xl mx-auto px-6">
                     <Row gutter={[40, 40]} justify="center">
                         {[
-                            { icon: <TeamOutlined />, count: "25+", label: "Năm kinh nghiệm", color: "blue" },
-                            { icon: <TrophyOutlined />, count: "100+", label: "Giải thưởng NCKH", color: "yellow" },
-                            { icon: <GlobalOutlined />, count: "5000+", label: "Sinh viên thành đạt", color: "green" },
-                            { icon: <RocketOutlined />, count: "98%", label: "Tỷ lệ có việc làm", color: "indigo" }
+                            { icon: <TeamOutlined />, count: "25+", label: t('faculty.stats.experience'), color: "blue" },
+                            { icon: <TrophyOutlined />, count: "100+", label: t('faculty.stats.awards'), color: "yellow" },
+                            { icon: <GlobalOutlined />, count: "5000+", label: t('faculty.stats.students'), color: "green" },
+                            { icon: <RocketOutlined />, count: "98%", label: t('faculty.stats.employment'), color: "indigo" }
                         ].map((stat, i) => (
-                            <Col xs={12} md={6} lg={6} key={i}>
+                            <Col xs={24} sm={12} md={6} key={i}>
                                 <div className="text-center p-8 bg-white rounded-3xl shadow-lg border border-gray-100 hover:-translate-y-2 transition-all duration-300 group">
                                     <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-blue-50 flex items-center justify-center text-3xl text-blue-600 group-hover:scale-110 transition-transform`}>
                                         {stat.icon}
                                     </div>
-                                    <Title level={1} className="m-0 font-black text-gray-800">{stat.count}</Title>
-                                    <Text className="text-gray-400 font-medium uppercase tracking-wider text-xs">{stat.label}</Text>
+                                    <Title level={1} className="m-0 font-black text-gray-800 text-3xl md:text-4xl">{stat.count}</Title>
+                                    <Text className="text-gray-400 font-medium uppercase tracking-wider text-[10px] md:text-xs">{stat.label}</Text>
                                 </div>
                             </Col>
                         ))}
@@ -94,20 +96,20 @@ const FacultyLanding = () => {
                     <Col xs={24} lg={12}>
                         <div className="space-y-8">
                             <div>
-                                <Text className="text-blue-600 font-black tracking-widest uppercase text-sm">Về chúng tôi</Text>
+                                <Text className="text-blue-600 font-black tracking-widest uppercase text-sm">{t('faculty.about.tagline')}</Text>
                                 <Title className="text-4xl md:text-5xl font-black text-gray-900 mt-2 mb-6">
-                                    Xây dựng nền tảng tri thức vững chắc
+                                    {t('faculty.about.title')}
                                 </Title>
                                 <Paragraph className="text-gray-600 text-lg leading-relaxed">
-                                    Khoa Công nghệ Thông tin cam kết cung cấp một môi trường học tập năng động, sáng tạo, nơi sinh viên không chỉ học lý thuyết mà còn được rèn luyện kỹ năng thực tế thông qua các dự án lớn và sự hỗ trợ từ các doanh nghiệp hàng đầu.
+                                    {t('faculty.about.description')}
                                 </Paragraph>
                             </div>
                             
                             <div className="space-y-4">
                                 {[
-                                    { title: "Đội ngũ giảng viên tinh hoa", desc: "Các giáo sư, tiến sĩ giàu kinh nghiệm tu nghiệp tại nước ngoài." },
-                                    { title: "Chương trình học thực tiễn", desc: "Cập nhật liên tục theo xu hướng công nghệ mới nhất như AI, Blockchain." },
-                                    { title: "Cơ sở vật chất hiện đại", desc: "Hệ thống phòng Lab, máy chủ hiệu năng cao phục vụ nghiên cứu." }
+                                    { title: t('faculty.about.feature1_title'), desc: t('faculty.about.feature1_desc') },
+                                    { title: t('faculty.about.feature2_title'), desc: t('faculty.about.feature2_desc') },
+                                    { title: t('faculty.about.feature3_title'), desc: t('faculty.about.feature3_desc') }
                                 ].map((item, i) => (
                                     <div className="flex gap-4 p-4 rounded-2xl hover:bg-blue-50 transition-colors" key={i}>
                                         <div className="flex-shrink-0 w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-blue-600">
@@ -129,19 +131,21 @@ const FacultyLanding = () => {
             <section className="py-24 bg-blue-900 text-white">
                 <div className="max-w-4xl mx-auto px-6">
                     <div className="text-center mb-16">
-                        <Title className="text-white text-4xl md:text-5xl font-black mb-4" style={{ color: 'white' }}>Hành trình phát triển</Title>
-                        <Text className="text-blue-300 text-lg">Những cột mốc quan trọng khẳng định vị thế của Khoa</Text>
+                        <Title className="text-white text-4xl md:text-5xl font-black mb-4" style={{ color: 'white' }}>{t('faculty.milestones.title')}</Title>
+                        <Text className="text-blue-300 text-lg">{t('faculty.milestones.subtitle')}</Text>
                     </div>
 
-                    <Timeline 
-                        mode="alternate"
-                        items={[
-                            { label: <span className="text-blue-300 font-bold">2000</span>, children: <div className="bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20"><Title level={5} className="text-white">Thành lập Khoa</Title><Text className="text-blue-100">Khởi đầu hành trình đào tạo nguồn nhân lực CNTT chất lượng cao.</Text></div> },
-                            { label: <span className="text-blue-300 font-bold">2010</span>, children: <div className="bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20"><Title level={5} className="text-white">Đạt chuẩn Kiểm định Quốc tế</Title><Text className="text-blue-100">Chương trình đào tạo được công nhận bởi các tổ chức uy tín.</Text></div> },
-                            { label: <span className="text-blue-300 font-bold">2018</span>, children: <div className="bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20"><Title level={5} className="text-white">Trung tâm Lab AI hiện đại</Title><Text className="text-blue-100">Khánh thành trung tâm nghiên cứu AI và Big Data quy mô lớn.</Text></div> },
-                            { label: <span className="text-blue-300 font-bold">Nay</span>, children: <div className="bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20"><Title level={5} className="text-white">Top 1 Đào tạo CNTT</Title><Text className="text-blue-100">Khẳng định vị thế dẫn đầu trong khu vực về NCKH và Đào tạo.</Text></div> },
-                        ]}
-                    />
+                    <div className="timeline-wrapper">
+                        <Timeline 
+                            mode={window.innerWidth < 768 ? "left" : "alternate"}
+                            items={[
+                                { label: <span className="text-blue-300 font-bold">{t('faculty.milestones.m1_year')}</span>, children: <div className="bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20"><Title level={5} className="text-white">{t('faculty.milestones.m1_title')}</Title><Text className="text-blue-100">{t('faculty.milestones.m1_desc')}</Text></div> },
+                                { label: <span className="text-blue-300 font-bold">{t('faculty.milestones.m2_year')}</span>, children: <div className="bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20"><Title level={5} className="text-white">{t('faculty.milestones.m2_title')}</Title><Text className="text-blue-100">{t('faculty.milestones.m2_desc')}</Text></div> },
+                                { label: <span className="text-blue-300 font-bold">{t('faculty.milestones.m3_year')}</span>, children: <div className="bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20"><Title level={5} className="text-white">{t('faculty.milestones.m3_title')}</Title><Text className="text-blue-100">{t('faculty.milestones.m3_desc')}</Text></div> },
+                                { label: <span className="text-blue-300 font-bold">{t('faculty.milestones.m4_year')}</span>, children: <div className="bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20"><Title level={5} className="text-white">{t('faculty.milestones.m4_title')}</Title><Text className="text-blue-100">{t('faculty.milestones.m4_desc')}</Text></div> },
+                            ]}
+                        />
+                    </div>
                     
                 </div>
             </section>
@@ -149,16 +153,15 @@ const FacultyLanding = () => {
             {/* CONTACT & FOOTER SECTION */}
             <section style={{ background: '#0F172A', padding: '100px 24px 60px', color: '#94A3B8' }}>
                 <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-                    <Row gutter={[64, 40]}>
+                    <Row gutter={[40, 40]}>
                         <Col xs={24} md={10}>
-                            <Title level={2} style={{ color: '#fff', fontWeight: 900, marginBottom: 24 }}>
+                            <Title level={2} style={{ color: '#fff', fontWeight: 900, marginBottom: 24 }} className="text-3xl md:text-4xl">
                                 <span style={{ color: '#3B82F6' }}>Faculty of Information Technology</span>
                             </Title>
                             <Paragraph style={{ color: '#64748B', fontSize: 16, lineHeight: 1.8, marginBottom: 32 }}>
-                                Khoa Công nghệ Thông tin - Nơi đào tạo những thế hệ kỹ sư, chuyên gia công nghệ hàng đầu, 
-                                sẵn sàng chinh phục những đỉnh cao mới trong kỷ nguyên số.
+                                {t('faculty.footer.description')}
                             </Paragraph>
-                            <Space size={20}>
+                            <Space size={20} wrap>
                                 <div className="social-pill"><FacebookOutlined /></div>
                                 <div className="social-pill"><LinkedinOutlined /></div>
                                 <div className="social-pill"><GlobalOutlined /></div>
@@ -166,28 +169,28 @@ const FacultyLanding = () => {
                         </Col>
                         
                         <Col xs={24} sm={12} md={7}>
-                            <Title level={4} style={{ color: '#fff', marginBottom: 28 }}>Liên kết nhanh</Title>
+                            <Title level={4} style={{ color: '#fff', marginBottom: 28 }}>{t('faculty.footer.quick_links')}</Title>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                                <Text style={{ color: 'inherit', cursor: 'pointer' }} onClick={() => navigate('/')}>Hệ thống Tài liệu</Text>
-                                <Text style={{ color: 'inherit', cursor: 'pointer' }}>Chương trình Đào tạo</Text>
-                                <Text style={{ color: 'inherit', cursor: 'pointer' }}>Đội ngũ Giảng viên</Text>
-                                <Text style={{ color: 'inherit', cursor: 'pointer' }}>Tuyển sinh 2026</Text>
+                                <Text style={{ color: 'inherit', cursor: 'pointer' }} onClick={() => navigate('/')}>{t('faculty.footer.link_docs')}</Text>
+                                <Text style={{ color: 'inherit', cursor: 'pointer' }}>{t('faculty.footer.link_curriculum')}</Text>
+                                <Text style={{ color: 'inherit', cursor: 'pointer' }}>{t('faculty.footer.link_lecturers')}</Text>
+                                <Text style={{ color: 'inherit', cursor: 'pointer' }}>{t('faculty.footer.link_admission')}</Text>
                             </div>
                         </Col>
 
                         <Col xs={24} sm={12} md={7}>
-                            <Title level={4} style={{ color: '#fff', marginBottom: 28 }}>Văn phòng Khoa</Title>
+                            <Title level={4} style={{ color: '#fff', marginBottom: 28 }}>{t('faculty.footer.office')}</Title>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                                 <div style={{ display: 'flex', gap: 16 }}>
-                                    <EnvironmentOutlined style={{ color: '#3B82F6', fontSize: 20 }} />
-                                    <Text style={{ color: 'inherit' }}> Trường Đại học Hà Nội, Phòng 201C, Phường Đại Mỗ ,Quận Nam Từ Liêm, Thành phố Hà Nội</Text>
+                                    <EnvironmentOutlined style={{ color: '#3B82F6', fontSize: 20, flexShrink: 0 }} />
+                                    <Text style={{ color: 'inherit' }}> {t('faculty.footer.address')}</Text>
                                 </div>
                                 <div style={{ display: 'flex', gap: 16 }}>
-                                    <PhoneOutlined style={{ color: '#3B82F6', fontSize: 20 }} />
+                                    <PhoneOutlined style={{ color: '#3B82F6', fontSize: 20, flexShrink: 0 }} />
                                     <Text style={{ color: 'inherit' }}>(024) 3764 3205</Text>
                                 </div>
                                 <div style={{ display: 'flex', gap: 16 }}>
-                                    <MailOutlined style={{ color: '#3B82F6', fontSize: 20 }} />
+                                    <MailOutlined style={{ color: '#3B82F6', fontSize: 20, flexShrink: 0 }} />
                                     <Text style={{ color: 'inherit' }}>fit@hanu.edu.vn</Text>
                                 </div>
                             </div>

@@ -45,6 +45,7 @@ import CreateNews from './pages/admin/CreateNews';
 import NotFound from './pages/NotFound';
 import FacultyLanding from './pages/client/FacultyLanding';
 import Notifications from './pages/client/Notifications';
+import Categories from './pages/client/Categories';
 
 
 // 1. Tạo Layout chung cho các trang của người dùng (Client)
@@ -74,6 +75,7 @@ const router = createBrowserRouter(
             <Route element={<ClientLayout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/home" element={<Navigate to="/" replace />} />
+                <Route path="/categories" element={<Categories />} />
                 <Route path="/document/:id" element={<DocumentDetail />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/events" element={<FacultyLanding />} />

@@ -1,0 +1,254 @@
+{
+    "navbar": {
+        "home": "Trang chủ",
+        "documents": "Thông báo",
+        "about": "Giới thiệu",
+        "news": "Tin tức",
+        "categories": "Danh mục",
+        "upload": "Đăng tài liệu",
+        "profile": "Trang cá nhân",
+        "admin_dashboard": "Bảng điều khiển Admin",
+        "create_news": "Viết tin tức / PR",
+        "login": "Đăng nhập",
+        "logout": "Đăng xuất"
+    },
+    "auth": {
+        "login_required_download": "Vui lòng đăng nhập để tải tài liệu!",
+        "login_required_read": "Vui lòng đăng nhập để xem tài liệu trực tuyến!"
+    },
+    "roles": {
+        "admin": "Quản trị viên",
+        "editor": "Quản trị nội dung",
+        "lecturer": "Giảng viên",
+        "student": "Sinh viên"
+    },
+    "home": {
+        "hero": {
+            "tagline": "FIT Research Hub",
+            "title_line1": "Kho tàng Tri thức Số",
+            "title_line2": "của Khoa CNTT",
+            "description": "Tìm kiếm, đọc và tải về hàng nghìn bài báo khoa học và bộ dữ liệu nghiên cứu.",
+            "search_placeholder": "Tìm tài liệu, tác giả...",
+            "search_btn": "Tìm kiếm"
+        },
+        "stats": {
+            "documents": "Tài liệu",
+            "authors": "Tác giả",
+            "awards": "Giải thưởng",
+            "ai_summary": "Hỗ trợ tóm tắt"
+        },
+        "filters": {
+            "type_paper": "Bài báo khoa học",
+            "type_dataset": "Dữ liệu nghiên cứu",
+            "category": "Chuyên mục",
+            "year": "Năm",
+            "sort": "Sắp xếp",
+            "sort_newest": "Mới nhất",
+            "sort_oldest": "Cũ nhất",
+            "sort_view": "Xem nhiều nhất",
+            "results_found": "Tìm thấy {{count}} tài liệu"
+        }
+    },
+    "footer": {
+        "description": "Kho lưu trữ và chia sẻ tài nguyên nghiên cứu khoa học trực thuộc Khoa Công nghệ Thông tin.",
+        "explore": "Khám phá",
+        "resources": "Tài nguyên",
+        "contact": "Liên hệ",
+        "about_us": "Về chúng tôi",
+        "user_guide": "Hướng dẫn sử dụng",
+        "privacy_policy": "Chính sách bảo mật",
+        "terms_of_service": "Điều khoản dịch vụ",
+        "tech_support": "Hỗ trợ kỹ thuật",
+        "copyright": "© 2026 Khoa Công nghệ Thông tin · FIT Research Hub. All rights reserved.",
+        "developed_by": "Phát triển bởi"
+    },
+    "document_detail": {
+        "breadcrumb_home": "Trang chủ",
+        "type_paper": "Bài báo khoa học",
+        "type_dataset": "Bộ dữ liệu (Dataset)",
+        "views": "lượt xem",
+        "pub_details": "Chi tiết xuất bản",
+        "pub_year": "Năm xuất bản",
+        "journal": "Tạp chí / Hội nghị",
+        "doi": "Mã DOI",
+        "format": "Định dạng",
+        "size": "Dung lượng",
+        "license": "Giấy phép",
+        "abstract": "Tóm tắt (Abstract)",
+        "no_abstract": "Tài liệu này hiện chưa có đoạn tóm tắt.",
+        "citation": "Trích dẫn học thuật (Citation)",
+        "copy": "Sao chép",
+        "copy_success": "Đã sao chép trích dẫn!",
+        "related_tags": "Từ khóa liên quan",
+        "attachments": "Tài liệu đính kèm",
+        "access_full": "Truy cập toàn văn bài nghiên cứu hoặc bộ dữ liệu gốc",
+        "download_pdf": "Tải PDF (Toàn văn)",
+        "download_zip": "Tải ZIP (Dataset)",
+        "no_file": "Chưa có file đính kèm cục bộ",
+        "view_github": "Xem Mã nguồn / GitHub",
+        "search_doi": "Tra cứu mã DOI",
+        "identifier": "Mã định danh",
+        "status": "Trạng thái",
+        "approved": "Đã kiểm duyệt",
+        "ai_assistant": "AI Trợ lý Tóm tắt",
+        "ai_subtitle": "Đọc nhanh nội dung chính",
+        "ai_analyzing": "AI đang phân tích tài liệu...",
+        "ai_prompt": "Bạn muốn nắm bắt nhanh ý chính của tài liệu này?",
+        "ai_btn": "Tóm tắt thông minh",
+        "ai_regen": "Tạo lại bản tóm tắt",
+        "ai_objective": "Mục tiêu chính",
+        "ai_methodology": "Phương pháp",
+        "ai_findings": "Kết quả nổi bật",
+        "read_direct": "Đọc trực tiếp",
+        "close_reader": "Đóng trình đọc",
+        "open_reader": "Mở trình đọc PDF",
+        "full_view": "Xem toàn màn hình",
+        "file_not_found": "Tài liệu tạm thời không khả dụng",
+        "file_not_found_desc": "Rất tiếc, tệp tin PDF này không được tìm thấy trên máy chủ hoặc đường dẫn đã thay đổi.",
+        "try_download": "Thử tải về máy",
+        "report_error": "Báo cáo lỗi file",
+        "preview_title": "Xem toàn văn bài báo",
+        "preview_desc": "Bạn có thể xem trực tiếp nội dung bài báo khoa học ngay tại đây mà không cần tải về máy.",
+        "preview_btn": "Bắt đầu đọc ngay",
+        "related_docs": "Tài liệu cùng chủ đề",
+        "view_history": "Tài liệu bạn đã xem",
+        "save_btn": "Lưu để xem sau",
+        "saved_btn": "Đã lưu tài liệu",
+        "save_short": "Lưu lại",
+        "saved_short": "Đã lưu"
+    },
+    "profile": {
+        "loading": "Đang tải thông tin cá nhân...",
+        "fetch_error": "Phiên đăng nhập hết hạn hoặc lỗi tải dữ liệu!",
+        "tabs": {
+            "account": "Thông tin tài khoản",
+            "resources": "Quản lý tài nguyên",
+            "saved": "Tài liệu đã lưu",
+            "settings": "Cài đặt & Bảo mật"
+        },
+        "account": {
+            "user_code": "Mã số",
+            "email": "Email",
+            "department": "Đơn vị/Khoa",
+            "class": "Lớp",
+            "role": "Quyền hạn",
+            "not_updated": "Chưa cập nhật"
+        },
+        "resources": {
+            "title": "Kho tài nguyên của tôi",
+            "upload_btn": "+ Tải lên tài liệu mới",
+            "empty": "Bạn chưa tải lên tài liệu nào.",
+            "reject_reason": "Lý do bị Quản trị viên từ chối:",
+            "category": "Chuyên ngành",
+            "table": {
+                "name": "Tên tài liệu",
+                "type": "Loại",
+                "date": "Ngày tạo",
+                "status": "Trạng thái",
+                "action": "Hành động",
+                "edit": "Chỉnh sửa"
+            },
+            "status": {
+                "draft": "Bản nháp",
+                "pending": "Đang chờ duyệt",
+                "approved": "Đã xuất bản",
+                "rejected": "Bị từ chối"
+            }
+        },
+        "saved": {
+            "empty_title": "Bạn chưa lưu tài liệu nào",
+            "empty_desc": "Hãy lướt trang chủ và bấm Lưu những bài báo bạn quan tâm nhé.",
+            "explore_btn": "Khám phá ngay"
+        },
+        "settings": {
+            "security_title": "Bảo mật tài khoản",
+            "password_title": "Mật khẩu đăng nhập",
+            "password_desc": "Thay đổi mật khẩu định kỳ để bảo vệ tài khoản của bạn.",
+            "change_password_btn": "Đổi mật khẩu",
+            "personalization_title": "Cá nhân hóa",
+            "dev_feature": "Tính năng đang phát triển",
+            "dev_desc": "Các tính năng cập nhật hồ sơ (Ảnh đại diện, tiểu sử, thông tin liên hệ...) sẽ sớm được ra mắt trong các phiên bản tới."
+        },
+        "password_modal": {
+            "title": "Đổi mật khẩu tài khoản",
+            "current": "Mật khẩu hiện tại",
+            "current_req": "Vui lòng nhập mật khẩu hiện tại!",
+            "new": "Mật khẩu mới",
+            "new_req": "Vui lòng nhập mật khẩu mới!",
+            "new_min": "Mật khẩu phải có ít nhất 6 ký tự!",
+            "confirm": "Xác nhận mật khẩu mới",
+            "confirm_req": "Vui lòng xác nhận lại mật khẩu!",
+            "confirm_mismatch": "Mật khẩu xác nhận không khớp!",
+            "update_btn": "Cập nhật",
+            "cancel_btn": "Hủy",
+            "success": "Đổi mật khẩu thành công!",
+            "error": "Có lỗi xảy ra khi đổi mật khẩu!"
+        }
+    },
+    "faculty": {
+        "hero": {
+            "welcome": "Chào mừng bạn đến với",
+            "title_line1": "KHOA CÔNG NGHỆ",
+            "title_line2": "THÔNG TIN",
+            "description": "Nơi khơi nguồn đam mê, kiến tạo tương lai số và khẳng định vị thế dẫn đầu trong đào tạo nghiên cứu công nghệ.",
+            "explore_btn": "Khám phá ngay",
+            "contact_btn": "Liên hệ tư vấn"
+        },
+        "stats": {
+            "experience": "Năm kinh nghiệm",
+            "awards": "Giải thưởng NCKH",
+            "students": "Sinh viên thành đạt",
+            "employment": "Tỷ lệ có việc làm"
+        },
+        "about": {
+            "tagline": "Về chúng tôi",
+            "title": "Xây dựng nền tảng tri thức vững chắc",
+            "description": "Khoa Công nghệ Thông tin cam kết cung cấp một môi trường học tập năng động, sáng tạo, nơi sinh viên không chỉ học lý thuyết mà còn được rèn luyện kỹ năng thực tế thông qua các dự án lớn và sự hỗ trợ từ các doanh nghiệp hàng đầu.",
+            "feature1_title": "Đội ngũ giảng viên tinh hoa",
+            "feature1_desc": "Các giáo sư, tiến sĩ giàu kinh nghiệm tu nghiệp tại nước ngoài.",
+            "feature2_title": "Chương trình học thực tiễn",
+            "feature2_desc": "Cập nhật liên tục theo xu hướng công nghệ mới nhất như AI, Blockchain.",
+            "feature3_title": "Cơ sở vật chất hiện đại",
+            "feature3_desc": "Hệ thống phòng Lab, máy chủ hiệu năng cao phục vụ nghiên cứu."
+        },
+        "milestones": {
+            "title": "Hành trình phát triển",
+            "subtitle": "Những cột mốc quan trọng khẳng định vị thế của Khoa",
+            "m1_year": "2000",
+            "m1_title": "Thành lập Khoa",
+            "m1_desc": "Khởi đầu hành trình đào tạo nguồn nhân lực CNTT chất lượng cao.",
+            "m2_year": "2010",
+            "m2_title": "Đạt chuẩn Kiểm định Quốc tế",
+            "m2_desc": "Chương trình đào tạo được công nhận bởi các tổ chức uy tín.",
+            "m3_year": "2018",
+            "m3_title": "Trung tâm Lab AI hiện đại",
+            "m3_desc": "Khánh thành trung tâm nghiên cứu AI và Big Data quy mô lớn.",
+            "m4_year": "Nay",
+            "m4_title": "Top 1 Đào tạo CNTT",
+            "m4_desc": "Khẳng định vị thế dẫn đầu trong khu vực về NCKH và Đào tạo."
+        },
+        "footer": {
+            "description": "Khoa Công nghệ Thông tin - Nơi đào tạo những thế hệ kỹ sư, chuyên gia công nghệ hàng đầu, sẵn sàng chinh phục những đỉnh cao mới trong kỷ nguyên số.",
+            "quick_links": "Liên kết nhanh",
+            "office": "Văn phòng Khoa",
+            "link_docs": "Hệ thống Tài liệu",
+            "link_curriculum": "Chương trình Đào tạo",
+            "link_lecturers": "Đội ngũ Giảng viên",
+            "link_admission": "Tuyển sinh 2026",
+            "address": "Trường Đại học Hà Nội, Phòng 201C, Phường Đại Mỗ, Quận Nam Từ Liêm, Thành phố Hà Nội"
+        }
+    },
+    "notifications": {
+        "title": "Trung tâm Thông báo",
+        "subtitle": "Cập nhật các thông báo mới nhất từ Văn phòng Khoa",
+        "search_placeholder": "Tìm kiếm thông báo...",
+        "filter_all": "Tất cả",
+        "filter_urgent": "Thông báo gấp",
+        "filter_news": "Tin tức",
+        "filter_event": "Sự kiện",
+        "no_results": "Không tìm thấy thông báo nào phù hợp.",
+        "read_more": "Xem chi tiết",
+        "save_btn": "Lưu bài viết",
+        "saved_btn": "Đã lưu"
+    }
+}

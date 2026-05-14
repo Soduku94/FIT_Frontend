@@ -1,0 +1,254 @@
+{
+    "navbar": {
+        "home": "Home",
+        "documents": "Documents",
+        "about": "About",
+        "news": "News",
+        "categories": "Categories",
+        "upload": "Upload",
+        "profile": "Profile",
+        "admin_dashboard": "Admin Dashboard",
+        "create_news": "Create News / PR",
+        "login": "Login",
+        "logout": "Logout"
+    },
+    "auth": {
+        "login_required_download": "Please login to download the document!",
+        "login_required_read": "Please login to view the document online!"
+    },
+    "roles": {
+        "admin": "Administrator",
+        "editor": "Content Manager",
+        "lecturer": "Lecturer",
+        "student": "Student"
+    },
+    "home": {
+        "hero": {
+            "tagline": "FIT Research Hub",
+            "title_line1": "Digital Knowledge Hub",
+            "title_line2": "of FIT Faculty",
+            "description": "Search, read and download thousands of research papers and datasets.",
+            "search_placeholder": "Search documents, authors...",
+            "search_btn": "Search"
+        },
+        "stats": {
+            "documents": "Documents",
+            "authors": "Authors",
+            "awards": "Awards",
+            "ai_summary": "AI Summary"
+        },
+        "filters": {
+            "type_paper": "Research Papers",
+            "type_dataset": "Research Datasets",
+            "category": "Category",
+            "year": "Year",
+            "sort": "Sort by",
+            "sort_newest": "Newest",
+            "sort_oldest": "Oldest",
+            "sort_view": "Most viewed",
+            "results_found": "Found {{count}} documents"
+        }
+    },
+    "footer": {
+        "description": "Scientific research resource repository and sharing center under the Faculty of Information Technology.",
+        "explore": "Explore",
+        "resources": "Resources",
+        "contact": "Contact",
+        "about_us": "About Us",
+        "user_guide": "User Guide",
+        "privacy_policy": "Privacy Policy",
+        "terms_of_service": "Terms of Service",
+        "tech_support": "Technical Support",
+        "copyright": "© 2026 Faculty of Information Technology · FIT Research Hub. All rights reserved.",
+        "developed_by": "Developed by"
+    },
+    "document_detail": {
+        "breadcrumb_home": "Home",
+        "type_paper": "Research Paper",
+        "type_dataset": "Research Dataset",
+        "views": "views",
+        "pub_details": "Publication Details",
+        "pub_year": "Publication Year",
+        "journal": "Journal / Conference",
+        "doi": "DOI Code",
+        "format": "Format",
+        "size": "Size",
+        "license": "License",
+        "abstract": "Abstract",
+        "no_abstract": "This document currently has no abstract.",
+        "citation": "Academic Citation",
+        "copy": "Copy",
+        "copy_success": "Citation copied!",
+        "related_tags": "Related Tags",
+        "attachments": "Attachments",
+        "access_full": "Access full research paper or source dataset",
+        "download_pdf": "Download PDF (Full text)",
+        "download_zip": "Download ZIP (Dataset)",
+        "no_file": "No local attachment available",
+        "view_github": "View Source / GitHub",
+        "search_doi": "Lookup DOI",
+        "identifier": "Identifier",
+        "status": "Status",
+        "approved": "Verified",
+        "ai_assistant": "AI Summary Assistant",
+        "ai_subtitle": "Quickly grasp key points",
+        "ai_analyzing": "AI is analyzing the document...",
+        "ai_prompt": "Want to quickly grasp the main points of this document?",
+        "ai_btn": "Smart Summary",
+        "ai_regen": "Regenerate Summary",
+        "ai_objective": "Main Objective",
+        "ai_methodology": "Methodology",
+        "ai_findings": "Key Findings",
+        "read_direct": "Read Online",
+        "close_reader": "Close Reader",
+        "open_reader": "Open PDF Reader",
+        "full_view": "Full Screen View",
+        "file_not_found": "Document temporarily unavailable",
+        "file_not_found_desc": "Sorry, this PDF file was not found on the server or the path has changed.",
+        "try_download": "Try downloading",
+        "report_error": "Report file error",
+        "preview_title": "Preview Full Paper",
+        "preview_desc": "You can view the content of the research paper directly here without downloading.",
+        "preview_btn": "Start Reading Now",
+        "related_docs": "Related Documents",
+        "view_history": "Recently Viewed",
+        "save_btn": "Save for later",
+        "saved_btn": "Saved document",
+        "save_short": "Save",
+        "saved_short": "Saved"
+    },
+    "profile": {
+        "loading": "Loading personal information...",
+        "fetch_error": "Session expired or data loading error!",
+        "tabs": {
+            "account": "Account Information",
+            "resources": "Resource Management",
+            "saved": "Saved Documents",
+            "settings": "Settings & Security"
+        },
+        "account": {
+            "user_code": "User Code",
+            "email": "Email",
+            "department": "Department/Faculty",
+            "class": "Class",
+            "role": "Permissions",
+            "not_updated": "Not updated"
+        },
+        "resources": {
+            "title": "My Resource Repository",
+            "upload_btn": "+ Upload New Document",
+            "empty": "You haven't uploaded any documents yet.",
+            "reject_reason": "Rejection reason by Admin:",
+            "category": "Major",
+            "table": {
+                "name": "Document Name",
+                "type": "Type",
+                "date": "Created Date",
+                "status": "Status",
+                "action": "Action",
+                "edit": "Edit"
+            },
+            "status": {
+                "draft": "Draft",
+                "pending": "Pending Review",
+                "approved": "Published",
+                "rejected": "Rejected"
+            }
+        },
+        "saved": {
+            "empty_title": "You haven't saved any documents",
+            "empty_desc": "Browse the home page and save papers you're interested in.",
+            "explore_btn": "Explore Now"
+        },
+        "settings": {
+            "security_title": "Account Security",
+            "password_title": "Login Password",
+            "password_desc": "Change your password periodically to protect your account.",
+            "change_password_btn": "Change Password",
+            "personalization_title": "Personalization",
+            "dev_feature": "Feature under development",
+            "dev_desc": "Profile update features (Avatar, bio, contact info...) will be released soon in future versions."
+        },
+        "password_modal": {
+            "title": "Change Account Password",
+            "current": "Current Password",
+            "current_req": "Please enter your current password!",
+            "new": "New Password",
+            "new_req": "Please enter a new password!",
+            "new_min": "Password must be at least 6 characters!",
+            "confirm": "Confirm New Password",
+            "confirm_req": "Please confirm your new password!",
+            "confirm_mismatch": "Confirmation password does not match!",
+            "update_btn": "Update",
+            "cancel_btn": "Cancel",
+            "success": "Password changed successfully!",
+            "error": "An error occurred while changing password!"
+        }
+    },
+    "faculty": {
+        "hero": {
+            "welcome": "Welcome to",
+            "title_line1": "FACULTY OF INFORMATION",
+            "title_line2": "TECHNOLOGY",
+            "description": "Inspiring passion, creating the digital future, and asserting leadership in technology research and education.",
+            "explore_btn": "Explore Now",
+            "contact_btn": "Contact for Admission"
+        },
+        "stats": {
+            "experience": "Years of Experience",
+            "awards": "Research Awards",
+            "students": "Successful Students",
+            "employment": "Employment Rate"
+        },
+        "about": {
+            "tagline": "About Us",
+            "title": "Building a solid knowledge foundation",
+            "description": "The Faculty of Information Technology is committed to providing a dynamic and creative learning environment, where students not only learn theory but also practice practical skills through major projects and support from leading enterprises.",
+            "feature1_title": "Elite Faculty Team",
+            "feature1_desc": "Experienced professors and PhDs graduated from prestigious international universities.",
+            "feature2_title": "Practical Curriculum",
+            "feature2_desc": "Continuously updated according to the latest technology trends such as AI, Blockchain.",
+            "feature3_title": "Modern Facilities",
+            "feature3_desc": "System of Labs and high-performance servers for research."
+        },
+        "milestones": {
+            "title": "Development Journey",
+            "subtitle": "Important milestones affirming the Faculty's position",
+            "m1_year": "2000",
+            "m1_title": "Faculty Foundation",
+            "m1_desc": "Beginning the journey of training high-quality IT human resources.",
+            "m2_year": "2010",
+            "m2_title": "International Quality Standard",
+            "m2_desc": "Curriculum recognized by prestigious international accreditation organizations.",
+            "m3_year": "2018",
+            "m3_title": "Modern AI Lab Center",
+            "m3_desc": "Inaugurated a large-scale AI and Big Data research center.",
+            "m4_year": "Present",
+            "m4_title": "Top 1 in IT Education",
+            "m4_desc": "Affirming leading position in the region in Scientific Research and Education."
+        },
+        "footer": {
+            "description": "Faculty of Information Technology - Training the leading generations of engineers and technology experts, ready to conquer new heights in the digital era.",
+            "quick_links": "Quick Links",
+            "office": "Faculty Office",
+            "link_docs": "Document System",
+            "link_curriculum": "Training Curriculum",
+            "link_lecturers": "Faculty Staff",
+            "link_admission": "2026 Admission",
+            "address": "Hanoi University, Room 201C, Dai Mo Ward, Nam Tu Liem District, Hanoi City"
+        }
+    },
+    "notifications": {
+        "title": "Notification Center",
+        "subtitle": "Latest updates from the Faculty Office",
+        "search_placeholder": "Search notifications...",
+        "filter_all": "All",
+        "filter_urgent": "Urgent",
+        "filter_news": "News",
+        "filter_event": "Events",
+        "no_results": "No notifications found.",
+        "read_more": "Read details",
+        "save_btn": "Save post",
+        "saved_btn": "Saved"
+    }
+}

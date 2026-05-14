@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Layout, Typography, Row, Col, Space, Divider } from 'antd';
 import { 
     FacebookOutlined, 
@@ -15,6 +16,7 @@ const { Footer } = Layout;
 const { Title, Text } = Typography;
 
 const AppFooter = () => {
+    const { t } = useTranslation();
     return (
         <Footer style={{ 
             background: '#1E293B', 
@@ -30,7 +32,7 @@ const AppFooter = () => {
                                 FIT <span style={{ color: '#3B82F6' }}>Research Hub</span>
                             </Title>
                             <Text style={{ color: 'rgba(255, 255, 255, 0.45)', fontSize: 13, display: 'block', marginTop: 8 }}>
-                                Kho lưu trữ và chia sẻ tài nguyên nghiên cứu khoa học trực thuộc Khoa Công nghệ Thông tin.
+                                {t('footer.description')}
                             </Text>
                         </div>
                         <Space size={16}>
@@ -41,30 +43,30 @@ const AppFooter = () => {
                     </Col>
 
                     {/* Quick Links */}
-                    <Col xs={12} md={4}>
-                        <Title level={5} style={{ color: '#fff', marginBottom: 24, fontSize: 16 }}>Khám phá</Title>
+                    <Col xs={24} sm={12} md={4}>
+                        <Title level={5} style={{ color: '#fff', marginBottom: 24, fontSize: 16 }}>{t('footer.explore')}</Title>
                         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                            <li style={{ marginBottom: 12 }}><Link to="/" style={{ color: 'inherit' }}>Trang chủ</Link></li>
-                            <li style={{ marginBottom: 12 }}><Link to="/documents" style={{ color: 'inherit' }}>Tài liệu</Link></li>
-                            <li style={{ marginBottom: 12 }}><Link to="/news" style={{ color: 'inherit' }}>Tin tức</Link></li>
-                            <li style={{ marginBottom: 12 }}><Link to="/about" style={{ color: 'inherit' }}>Về chúng tôi</Link></li>
+                            <li style={{ marginBottom: 12 }}><Link to="/" style={{ color: 'inherit' }}>{t('navbar.home')}</Link></li>
+                            <li style={{ marginBottom: 12 }}><Link to="/documents" style={{ color: 'inherit' }}>{t('navbar.documents')}</Link></li>
+                            <li style={{ marginBottom: 12 }}><Link to="/news" style={{ color: 'inherit' }}>{t('navbar.news')}</Link></li>
+                            <li style={{ marginBottom: 12 }}><Link to="/about" style={{ color: 'inherit' }}>{t('footer.about_us')}</Link></li>
                         </ul>
                     </Col>
 
                     {/* Resources */}
-                    <Col xs={12} md={4}>
-                        <Title level={5} style={{ color: '#fff', marginBottom: 24, fontSize: 16 }}>Tài nguyên</Title>
+                    <Col xs={24} sm={12} md={4}>
+                        <Title level={5} style={{ color: '#fff', marginBottom: 24, fontSize: 16 }}>{t('footer.resources')}</Title>
                         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                            <li style={{ marginBottom: 12 }}><a href="#" style={{ color: 'inherit' }}>Hướng dẫn sử dụng</a></li>
-                            <li style={{ marginBottom: 12 }}><a href="#" style={{ color: 'inherit' }}>Chính sách bảo mật</a></li>
-                            <li style={{ marginBottom: 12 }}><a href="#" style={{ color: 'inherit' }}>Điều khoản dịch vụ</a></li>
-                            <li style={{ marginBottom: 12 }}><a href="#" style={{ color: 'inherit' }}>Hỗ trợ kỹ thuật</a></li>
+                            <li style={{ marginBottom: 12 }}><a href="#" style={{ color: 'inherit' }}>{t('footer.user_guide')}</a></li>
+                            <li style={{ marginBottom: 12 }}><a href="#" style={{ color: 'inherit' }}>{t('footer.privacy_policy')}</a></li>
+                            <li style={{ marginBottom: 12 }}><a href="#" style={{ color: 'inherit' }}>{t('footer.terms_of_service')}</a></li>
+                            <li style={{ marginBottom: 12 }}><a href="#" style={{ color: 'inherit' }}>{t('footer.tech_support')}</a></li>
                         </ul>
                     </Col>
 
                     {/* Contact Info */}
                     <Col xs={24} md={8}>
-                        <Title level={5} style={{ color: '#fff', marginBottom: 24, fontSize: 16 }}>Liên hệ</Title>
+                        <Title level={5} style={{ color: '#fff', marginBottom: 24, fontSize: 16 }}>{t('footer.contact')}</Title>
                         <Space direction="vertical" size={16}>
                             <div style={{ display: 'flex', gap: 12 }}>
                                 <EnvironmentOutlined style={{ color: '#3B82F6', marginTop: 4 }} />
@@ -86,10 +88,10 @@ const AppFooter = () => {
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
                     <Text style={{ color: 'rgba(255, 255, 255, 0.35)', fontSize: 12 }}>
-                        © 2026 Khoa Công nghệ Thông tin · FIT Research Hub. All rights reserved.
+                        {t('footer.copyright')}
                     </Text>
                     <Text style={{ color: 'rgba(255, 255, 255, 0.35)', fontSize: 12 }}>
-                        Phát triển bởi <span style={{ color: 'rgba(255, 255, 255, 0.65)' }}>Đội ngũ Kỹ thuật FIT</span>
+                        {t('footer.developed_by')} <span style={{ color: 'rgba(255, 255, 255, 0.65)' }}>Phạm Vũ Minh Hoàng, Đỗ Tuấn Dũng, Đặng Văn Minh</span>
                     </Text>
                 </div>
             </div>

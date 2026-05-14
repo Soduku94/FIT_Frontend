@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Layout, Typography, Input, Card, Tag, Spin, message,
     Row, Col, Empty, Button, Select, Space, Pagination, AutoComplete, Segmented, Badge, Divider
@@ -9,7 +10,7 @@ import {
     TrophyOutlined, TeamOutlined, ReadOutlined, ThunderboltOutlined,
     AppstoreOutlined, BarsOutlined
 } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../services/api';
 import AppFooter from '../../components/layout/AppFooter';
 
@@ -52,57 +53,70 @@ const DocCard = ({ doc, onClick, viewMode = 'grid' }) => {
         return (
             <Card
                 hoverable
+                className="list-card"
                 onClick={onClick}
-                style={{
-                    borderRadius: 16, border: '1.5px solid #F1F5F9',
-                    marginBottom: 16, cursor: 'pointer',
-                    transition: 'all 0.25s ease',
-                }}
-                bodyStyle={{ padding: '20px 24px' }}
-                onMouseEnter={e => {
-                    e.currentTarget.style.borderColor = '#3B82F6';
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(59,130,246,0.08)';
-                }}
-                onMouseLeave={e => {
-                    e.currentTarget.style.borderColor = '#F1F5F9';
-                    e.currentTarget.style.boxShadow = 'none';
-                }}
+                bodyStyle={{ padding: window.innerWidth < 576 ? '20px' : '24px 32px' }}
             >
-                <Row gutter={24} align="middle">
-                    <Col xs={24} sm={18}>
-                        <div style={{ display: 'flex', gap: 12, marginBottom: 8, alignItems: 'center' }}>
+                <Row gutter={[24, 16]} align="middle">
+                    <Col xs={24} sm={20}>
+                        <div style={{ display: 'flex', gap: 12, marginBottom: 12, alignItems: 'center', flexWrap: 'wrap' }}>
                             <Tag
                                 color={isPaper ? 'blue' : 'purple'}
-                                style={{ borderRadius: 6, fontWeight: 700, fontSize: 10, border: 'none' }}
+                                style={{ 
+                                    borderRadius: 8, 
+                                    fontWeight: 800, 
+                                    fontSize: 11, 
+                                    border: 'none', 
+                                    margin: 0,
+                                    padding: '2px 10px',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.02em'
+                                }}
                             >
                                 {doc.category_name || (isPaper ? 'BÀI BÁO' : 'DATASET')}
                             </Tag>
-                            <Text style={{ fontSize: 12, color: '#94A3B8' }}>
-                                <CalendarOutlined style={{ marginRight: 4 }} />
+                            <Divider type="vertical" style={{ background: '#E2E8F0', height: 14 }} />
+                            <Text style={{ fontSize: 13, color: '#64748B', fontWeight: 500 }}>
+                                <CalendarOutlined style={{ marginRight: 6, color: '#94A3B8' }} />
                                 {doc.publication_year || doc.created_at}
                             </Text>
                         </div>
-                        <Title level={5} style={{ margin: '0 0 8px', color: '#1E293B', fontWeight: 700 }} ellipsis={{ rows: 1 }}>
+                        
+                        <Title level={4} style={{ 
+                            margin: '0 0 10px', 
+                            color: '#0F172A', 
+                            fontWeight: 700, 
+                            fontSize: window.innerWidth < 576 ? 17 : 20,
+                            lineHeight: 1.4
+                        }}>
                             {doc.title}
                         </Title>
-                        <Paragraph style={{ color: '#64748B', fontSize: 13, margin: '0 0 12px' }} ellipsis={{ rows: 1 }}>
+                        
+                        <Paragraph style={{ 
+                            color: '#475569', 
+                            fontSize: 14, 
+                            margin: '0 0 16px',
+                            lineHeight: 1.6,
+                            maxWidth: '90%'
+                        }} ellipsis={{ rows: 2 }}>
                             {doc.description || "Tài liệu này hiện chưa có đoạn tóm tắt."}
                         </Paragraph>
-                        <Space split={<Divider type="vertical" />} style={{ fontSize: 12 }}>
-                            <span style={{ color: '#3B82F6', fontWeight: 600 }}>
-                                <UserOutlined style={{ marginRight: 6 }} />
-                                {formatAuthors(doc.authors)}
-                            </span>
-                            <span style={{ color: '#94A3B8' }}>
-                                <EyeOutlined style={{ marginRight: 6 }} />
-                                {doc.view_count || 0} lượt xem
-                            </span>
-                        </Space>
-                    </Col>
-                    <Col xs={0} sm={6} style={{ textAlign: 'right' }}>
-                        <Button type="primary" ghost icon={<ArrowRightOutlined />} style={{ borderRadius: 8 }}>
-                            Xem chi tiết
-                        </Button>
+                        
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, alignItems: 'center' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <UserOutlined style={{ color: '#3B82F6', fontSize: 13 }} />
+                                </div>
+                                <Text style={{ color: '#1E293B', fontWeight: 600, fontSize: 14 }}>
+                                    {formatAuthors(doc.authors)}
+                                </Text>
+                            </div>
+                            
+                            <Space size={16} style={{ color: '#94A3B8', fontSize: 13, fontWeight: 500 }}>
+                                <span><EyeOutlined style={{ marginRight: 6 }} />{doc.view_count || 0} lượt xem</span>
+                                {isPaper && doc.has_pdf && <Tag color="error" style={{ borderRadius: 6, fontSize: 10, fontWeight: 700, border: 'none' }}>PDF</Tag>}
+                            </Space>
+                        </div>
                     </Col>
                 </Row>
             </Card>
@@ -112,24 +126,9 @@ const DocCard = ({ doc, onClick, viewMode = 'grid' }) => {
     return (
         <Card
             hoverable
+            className="grid-card"
             onClick={onClick}
-            style={{
-                borderRadius: 20, border: '1.5px solid #F1F5F9',
-                height: '100%', cursor: 'pointer',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                overflow: 'hidden'
-            }}
             bodyStyle={{ padding: 0, display: 'flex', flexDirection: 'column', height: '100%' }}
-            onMouseEnter={e => {
-                e.currentTarget.style.borderColor = '#3B82F6';
-                e.currentTarget.style.boxShadow = '0 12px 30px rgba(59,130,246,0.15)';
-                e.currentTarget.style.transform = 'translateY(-5px)';
-            }}
-            onMouseLeave={e => {
-                e.currentTarget.style.borderColor = '#F1F5F9';
-                e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)';
-                e.currentTarget.style.transform = 'translateY(0)';
-            }}
         >
             <div style={{ padding: '24px 24px 16px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
@@ -181,7 +180,9 @@ const DocCard = ({ doc, onClick, viewMode = 'grid' }) => {
 
 /* ─── main component ─── */
 const Home = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
+    const location = useLocation();
     const [documents, setDocuments] = useState([]);
     const [latestNews, setLatestNews] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -234,6 +235,21 @@ const Home = () => {
     useEffect(() => { fetchCategories(); fetchLatestNews(); }, []);
     useEffect(() => { fetchDocuments(activeTab, searchText, selectedCategory, selectedYear, sortBy, 1); }, [activeTab, searchText, selectedCategory, selectedYear, sortBy]);
 
+    // Xử lý lọc theo danh mục từ URL (nếu có)
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const categoryName = params.get('category');
+        if (categoryName && categories.length > 0) {
+            const cat = categories.find(c => c.name === categoryName);
+            if (cat) {
+                setSelectedCategory(cat.id);
+                // Cuộn xuống phần kết quả
+                const element = document.getElementById('results-section');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }, [location.search, categories]);
+
     const handlePageChange = (page) => {
         fetchDocuments(activeTab, searchText, selectedCategory, selectedYear, sortBy, page);
         window.scrollTo({ top: 480, behavior: 'smooth' });
@@ -262,9 +278,9 @@ const Home = () => {
     const years = Array.from({ length: 15 }, (_, i) => currentYear - i);
 
     const sortOptions = [
-        { value: 'newest', label: 'Mới nhất' },
-        { value: 'oldest', label: 'Cũ nhất' },
-        { value: 'view', label: 'Xem nhiều nhất' },
+        { value: 'newest', label: t('home.filters.sort_newest') },
+        { value: 'oldest', label: t('home.filters.sort_oldest') },
+        { value: 'view', label: t('home.filters.sort_view') },
     ];
 
     return (
@@ -288,17 +304,79 @@ const Home = () => {
                     border: 1.5px solid #E2E8F0 !important;
                 }
                 .filter-select:hover .ant-select-selector { border-color: #3B82F6 !important; }
+                
+                /* Mobile Fixes */
+                .grid-card {
+                    border-radius: 20px !important;
+                    border: 1px solid #E2E8F0 !important;
+                    height: 100% !important;
+                    cursor: pointer !important;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                    overflow: hidden !important;
+                    background: #fff !important;
+                }
+                .grid-card:hover {
+                    border-color: #3B82F6 !important;
+                    box-shadow: 0 12px 30px rgba(59,130,246,0.12) !important;
+                    transform: translateY(-8px);
+                }
+
+                @media (max-width: 576px) {
+                    .hero-section { padding: 48px 16px 80px !important; }
+                    .main-content-card { 
+                        margin-top: -20px !important; 
+                        border-radius: 16px !important; 
+                        min-height: 600px !important;
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    .filter-bar { padding: 12px !important; }
+                    .results-container { padding: 16px !important; }
+                    .stat-pill-label { font-size: 10px !important; }
+                    .stat-pill-value { font-size: 16px !important; }
+                }
+                
+                .news-skeleton-card {
+                    background: #fff;
+                    border-radius: 16px;
+                    border: 1.5px solid #F1F5F9;
+                    height: 400px;
+                    padding: 20px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 16px;
+                }
+                .skeleton-img { height: 200px; background: #F1F5F9; border-radius: 12px; }
+                .skeleton-title { height: 24px; background: #F1F5F9; border-radius: 4px; width: 80%; }
+                .skeleton-text { height: 16px; background: #F1F5F9; border-radius: 4px; width: 100%; }
+                .skeleton-text.short { width: 60%; }
+
+                .list-card {
+                    border-radius: 20px !important;
+                    border: 1px solid #E2E8F0 !important;
+                    margin-bottom: 16px !important;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                    background: #fff !important;
+                }
+                .list-card:hover {
+                    border-color: #3B82F6 !important;
+                    transform: translateX(8px);
+                    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.1), 0 8px 10px -6px rgba(59, 130, 246, 0.1) !important;
+                }
+                @media (max-width: 576px) {
+                    .list-card:hover { transform: none; }
+                }
+
                 @keyframes fadeUp {
                     from { opacity: 0; transform: translateY(16px); }
                     to { opacity: 1; transform: translateY(0); }
                 }
                 .fade-up { animation: fadeUp 0.5s ease both; }
                 .fade-up-1 { animation: fadeUp 0.5s 0.1s ease both; }
-                .fade-up-2 { animation: fadeUp 0.5s 0.2s ease both; }
             `}</style>
 
             {/* ── HERO ── */}
-            <div style={{
+            <div className="hero-section" style={{
                 background: 'linear-gradient(135deg, #1D4ED8 0%, #1E40AF 50%, #1E3A8A 100%)',
                 padding: '72px 24px 100px', position: 'relative', overflow: 'hidden',
             }}>
@@ -313,7 +391,7 @@ const Home = () => {
                         padding: '5px 16px', marginBottom: 24,
                     }}>
                         <Text style={{ color: '#BFDBFE', fontWeight: 600, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                            FIT Research Hub
+                            {t('home.hero.tagline')}
                         </Text>
                     </div>
 
@@ -321,141 +399,173 @@ const Home = () => {
                         color: '#fff', margin: '0 0 16px', fontWeight: 800,
                         fontSize: 'clamp(32px, 5vw, 52px)', lineHeight: 1.2, letterSpacing: '-0.5px',
                     }}>
-                        Kho tàng Tri thức Số<br />
-                        <span style={{ color: '#93C5FD' }}>của Khoa CNTT</span>
+                        {t('home.hero.title_line1')}<br />
+                        <span style={{ color: '#93C5FD' }}>{t('home.hero.title_line2')}</span>
                     </Title>
 
                     <Paragraph className="fade-up-2" style={{ color: 'rgba(255,255,255,0.7)', fontSize: 16, marginBottom: 36, fontWeight: 400 }}>
-                        Tìm kiếm, đọc và tải về hàng nghìn bài báo khoa học và bộ dữ liệu nghiên cứu.
+                        {t('home.hero.description')}
                     </Paragraph>
 
                     {/* Search box */}
-                    <div className="fade-up-2" style={{
+                    <div className="fade-up" style={{
                         background: '#fff', borderRadius: 16, padding: 6,
                         boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
-                        display: 'flex', alignItems: 'center', gap: 8,
+                        display: 'flex', flexDirection: 'column', gap: 8,
                     }}>
-                        <AutoComplete
-                            options={options}
-                            onSelect={(value, option) => { setInputValue(value); if (option.id) navigate(`/document/${option.id}`); }}
-                            onSearch={setInputValue}
-                            style={{ flex: 1 }}
-                            dropdownStyle={{ borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }}
-                        >
-                            <Input
-                                className="search-input"
+                        <div style={{ display: 'flex', alignItems: 'center', width: '100%', gap: 8 }}>
+                            <div className="flex-1">
+                                <AutoComplete
+                                    options={options}
+                                    onSelect={(value, option) => { setInputValue(value); if (option.id) navigate(`/document/${option.id}`); }}
+                                    onSearch={setInputValue}
+                                    style={{ width: '100%' }}
+                                    dropdownStyle={{ borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }}
+                                >
+                                    <Input
+                                        className="search-input"
+                                        size="large"
+                                        placeholder={t('home.hero.search_placeholder')}
+                                        prefix={<SearchOutlined style={{ color: '#3B82F6', fontSize: 18 }} />}
+                                        bordered={false}
+                                        style={{ fontSize: 15, height: 48 }}
+                                        onPressEnter={() => setSearchText(inputValue)}
+                                    />
+                                </AutoComplete>
+                            </div>
+                            <Button
+                                type="primary"
                                 size="large"
-                                placeholder="Tìm tài liệu, tác giả, từ khóa..."
-                                prefix={<SearchOutlined style={{ color: '#3B82F6', fontSize: 18 }} />}
-                                bordered={false}
-                                style={{ fontSize: 15, height: 48 }}
-                                onPressEnter={() => setSearchText(inputValue)}
-                            />
-                        </AutoComplete>
+                                icon={<SearchOutlined />}
+                                className="hidden sm:flex items-center"
+                                style={{
+                                    height: 48, borderRadius: 12, fontWeight: 700,
+                                    background: '#3B82F6', border: 'none', paddingInline: 24,
+                                    boxShadow: '0 4px 12px rgba(59,130,246,0.4)',
+                                }}
+                                onClick={() => setSearchText(inputValue)}
+                            >
+                                {t('home.hero.search_btn')}
+                            </Button>
+                        </div>
                         <Button
                             type="primary"
                             size="large"
                             icon={<SearchOutlined />}
+                            className="sm:hidden w-full flex items-center justify-center"
                             style={{
                                 height: 48, borderRadius: 12, fontWeight: 700,
-                                background: '#3B82F6', border: 'none', paddingInline: 24,
+                                background: '#3B82F6', border: 'none',
                                 boxShadow: '0 4px 12px rgba(59,130,246,0.4)',
                             }}
                             onClick={() => setSearchText(inputValue)}
                         >
-                            Tìm kiếm
+                            {t('home.hero.search_btn')}
                         </Button>
                     </div>
 
                     {/* Stats pills */}
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 28, flexWrap: 'wrap' }}>
-                        <StatPill icon={<ReadOutlined />} value="5,000+" label="Tài liệu" />
-                        <StatPill icon={<TeamOutlined />} value="500+" label="Tác giả" />
-                        <StatPill icon={<TrophyOutlined />} value="100+" label="Giải thưởng" />
-                        <StatPill icon={<ThunderboltOutlined />} value="AI" label="Hỗ trợ tóm tắt" />
+                    <div className="stats-container" style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                        gap: 12, 
+                        marginTop: 28, 
+                        width: '100%' 
+                    }}>
+                        <StatPill icon={<ReadOutlined />} value="5,000+" label={t('home.stats.documents')} />
+                        <StatPill icon={<TeamOutlined />} value="500+" label={t('home.stats.authors')} />
+                        <StatPill icon={<TrophyOutlined />} value="100+" label={t('home.stats.awards')} />
+                        <StatPill icon={<ThunderboltOutlined />} value="AI" label={t('home.stats.ai_summary')} />
                     </div>
                 </div>
             </div>
 
             {/* ── MAIN CONTENT ── */}
-            <Content style={{ maxWidth: 1280, margin: '-32px auto 0', padding: '0 24px 64px', position: 'relative', zIndex: 1 }}>
-                <div style={{
+            <Content id="results-section" style={{ maxWidth: 1280, margin: '-32px auto 0', padding: '0 16px 64px', position: 'relative', zIndex: 1 }}>
+                <div className="main-content-card" style={{
                     background: '#fff', borderRadius: 20,
                     border: '1px solid #E2E8F0',
                     boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
                     overflow: 'hidden',
+                    minHeight: 600,
+                    display: 'flex',
+                    flexDirection: 'column'
                 }}>
                     {/* Filter bar */}
                     <div style={{
-                        padding: '20px 28px', borderBottom: '1px solid #F1F5F9',
-                        display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap',
+                        padding: '16px', borderBottom: '1px solid #F1F5F9',
+                        display: 'flex', flexDirection: 'column', gap: 16,
                         background: '#FAFBFC',
                     }}>
-                        {/* Type toggle */}
-                        <Segmented
-                            options={[
-                                { label: <Space><FilePdfOutlined />Bài báo khoa học</Space>, value: 'paper' },
-                                { label: <Space><DatabaseOutlined />Bộ dữ liệu</Space>, value: 'dataset' },
-                            ]}
-                            value={activeTab}
-                            onChange={setActiveTab}
-                        />
-
-                        <div style={{ flex: 1 }} />
-
-                        {/* View Switcher */}
-                        <div style={{ background: '#F1F5F9', padding: 4, borderRadius: 10, display: 'flex', gap: 4 }}>
-                            <Button
-                                type={viewMode === 'grid' ? 'primary' : 'text'}
-                                icon={<AppstoreOutlined />}
-                                onClick={() => setViewMode('grid')}
-                                size="small"
-                                style={{ borderRadius: 6, width: 32, height: 32, padding: 0 }}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+                            {/* Type toggle */}
+                            <Segmented
+                                options={[
+                                    { label: <Space><FilePdfOutlined /><span className="xs:inline">{t('home.filters.type_paper')}</span></Space>, value: 'paper' },
+                                    { label: <Space><DatabaseOutlined /><span className="xs:inline">{t('home.filters.type_dataset')}</span></Space>, value: 'dataset' },
+                                ]}
+                                value={activeTab}
+                                onChange={setActiveTab}
+                                className="flex-shrink-0"
                             />
-                            <Button
-                                type={viewMode === 'list' ? 'primary' : 'text'}
-                                icon={<BarsOutlined />}
-                                onClick={() => setViewMode('list')}
-                                size="small"
-                                style={{ borderRadius: 6, width: 32, height: 32, padding: 0 }}
-                            />
+
+                            {/* View Switcher (Hidden on small mobile) */}
+                            <div style={{ background: '#F1F5F9', padding: 4, borderRadius: 10, display: 'flex', gap: 4 }} className="hidden sm:flex">
+                                {/* <span style={{ color: '#94A3B8', fontSize: 12, fontWeight: 500 }}>Giao diện xem {viewMode}</span> */}
+                                <Button
+                                    type={viewMode === 'grid' ? 'primary' : 'text'}
+                                    icon={<AppstoreOutlined />}
+                                    onClick={() => setViewMode('grid')}
+                                    size="small"
+                                    style={{ borderRadius: 6, width: 32, height: 32, padding: 0 }}
+                                />
+                                <Button
+                                    type={viewMode === 'list' ? 'primary' : 'text'}
+                                    icon={<BarsOutlined />}
+                                    onClick={() => setViewMode('list')}
+                                    size="small"
+                                    style={{ borderRadius: 6, width: 32, height: 32, padding: 0 }}
+                                />
+                            </div>
                         </div>
 
-                        {/* Filters */}
-                        <Select
-                            className="filter-select"
-                            placeholder="Chuyên mục"
-                            allowClear
-                            onChange={setSelectedCategory}
-                            style={{ width: 180 }}
-                        >
-                            {categories.map(cat => (
-                                <Select.Option key={cat.id} value={cat.id}>{cat.name}</Select.Option>
-                            ))}
-                        </Select>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12 }}>
+                            {/* Filters */}
+                             <Select
+                                className="filter-select"
+                                placeholder={t('home.filters.category')}
+                                allowClear
+                                onChange={setSelectedCategory}
+                                style={{ width: '100%' }}
+                            >
+                                {categories.map(cat => (
+                                    <Select.Option key={cat.id} value={cat.id}>{cat.name}</Select.Option>
+                                ))}
+                            </Select>
 
-                        <Select
-                            className="filter-select"
-                            placeholder="Năm xuất bản"
-                            allowClear
-                            onChange={setSelectedYear}
-                            style={{ width: 150 }}
-                        >
-                            {years.map(y => (
-                                <Select.Option key={y} value={y}>{y}</Select.Option>
-                            ))}
-                        </Select>
+                             <Select
+                                className="filter-select"
+                                placeholder={t('home.filters.year')}
+                                allowClear
+                                onChange={setSelectedYear}
+                                style={{ width: '100%' }}
+                            >
+                                {years.map(y => (
+                                    <Select.Option key={y} value={y}>{y}</Select.Option>
+                                ))}
+                            </Select>
 
-                        <Select
-                            className="filter-select"
-                            defaultValue="newest"
-                            onChange={setSortBy}
-                            style={{ width: 160 }}
-                        >
-                            {sortOptions.map(o => (
-                                <Select.Option key={o.value} value={o.value}>{o.label}</Select.Option>
-                            ))}
-                        </Select>
+                            <Select
+                                className="filter-select"
+                                defaultValue="newest"
+                                onChange={setSortBy}
+                                style={{ width: '100%' }}
+                            >
+                                {sortOptions.map(o => (
+                                    <Select.Option key={o.value} value={o.value}>{o.label}</Select.Option>
+                                ))}
+                            </Select>
+                        </div>
                     </div>
 
                     {/* Results header */}
@@ -463,13 +573,13 @@ const Home = () => {
                         <Space>
                             <div style={{ width: 3, height: 18, background: '#3B82F6', borderRadius: 2 }} />
                             <Text style={{ fontWeight: 600, color: '#64748B', fontSize: 13 }}>
-                                Tìm thấy <span style={{ color: '#3B82F6', fontWeight: 700 }}>{total}</span> tài liệu
+                                {t('home.filters.results_found', { count: total })}
                             </Text>
                         </Space>
                     </div>
 
                     {/* Results grid */}
-                    <div style={{ padding: '20px 28px 28px' }}>
+                    <div style={{ padding: '20px 28px 28px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                         {loading ? (
                             <div style={{ textAlign: 'center', padding: '80px 0' }}>
                                 <Spin size="large" />
@@ -494,12 +604,18 @@ const Home = () => {
                                 )}
                             </div>
                         ) : (
-                            <div style={{ padding: '64px 0', textAlign: 'center' }}>
+                            <div style={{ padding: '120px 0', textAlign: 'center', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 <Empty
+                                    image={Empty.PRESENTED_IMAGE_SIMPLE}
                                     description={
-                                        <div>
-                                            <Text style={{ display: 'block', fontWeight: 600, color: '#94A3B8', fontSize: 15 }}>Không tìm thấy tài liệu nào</Text>
-                                            <Text style={{ color: '#CBD5E1', fontSize: 13 }}>Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</Text>
+                                        <div style={{ marginTop: 16 }}>
+                                            <Text style={{ display: 'block', fontWeight: 700, color: '#475569', fontSize: 18, marginBottom: 8 }}>
+                                                Hiện chưa có tài liệu nào
+                                            </Text>
+                                            <Text style={{ color: '#94A3B8', fontSize: 14 }}>
+                                                Hệ thống đang được cập nhật thêm nội dung.<br />
+                                                Vui lòng quay lại sau hoặc thay đổi bộ lọc.
+                                            </Text>
                                         </div>
                                     }
                                 />
@@ -524,31 +640,31 @@ const Home = () => {
             </Content>
 
             {/* ── TIN TỨC ── */}
-            {latestNews.length > 0 && (
-                <div style={{ background: '#fff', borderTop: '1px solid #F1F5F9', padding: '64px 24px' }}>
-                    <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32, flexWrap: 'wrap', gap: 16 }}>
-                            <div>
-                                <Text style={{ color: '#3B82F6', fontWeight: 700, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>
-                                    Tin tức & Sự kiện
-                                </Text>
-                                <Title level={2} style={{ margin: 0, fontWeight: 800, color: '#1E293B', letterSpacing: '-0.5px' }}>
-                                    Cập nhật mới nhất
-                                </Title>
-                            </div>
-                            <Button
-                                type="default"
-                                icon={<ArrowRightOutlined />}
-                                iconPosition="end"
-                                onClick={() => navigate('/about')}
-                                style={{ fontWeight: 600, borderRadius: 10, borderColor: '#E2E8F0', color: '#475569' }}
-                            >
-                                Xem tất cả
-                            </Button>
+            <div style={{ background: '#fff', borderTop: '1px solid #F1F5F9', padding: '64px 24px' }}>
+                <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32, flexWrap: 'wrap', gap: 16 }}>
+                        <div>
+                            <Text style={{ color: '#3B82F6', fontWeight: 700, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>
+                                Tin tức & Sự kiện
+                            </Text>
+                            <Title level={2} style={{ margin: 0, fontWeight: 800, color: '#1E293B', letterSpacing: '-0.5px' }}>
+                                Cập nhật mới nhất
+                            </Title>
                         </div>
+                        <Button
+                            type="default"
+                            icon={<ArrowRightOutlined />}
+                            iconPosition="end"
+                            onClick={() => navigate('/about')}
+                            style={{ fontWeight: 600, borderRadius: 10, borderColor: '#E2E8F0', color: '#475569' }}
+                        >
+                            Xem tất cả
+                        </Button>
+                    </div>
 
-                        <Row gutter={[20, 20]}>
-                            {latestNews.map((item, i) => (
+                    <Row gutter={[20, 20]}>
+                        {latestNews.length > 0 ? (
+                            latestNews.map((item, i) => (
                                 <Col xs={24} md={8} key={item.id}>
                                     <Card
                                         hoverable
@@ -590,11 +706,26 @@ const Home = () => {
                                         </div>
                                     </Card>
                                 </Col>
-                            ))}
-                        </Row>
-                    </div>
+                            ))
+                        ) : (
+                            [1, 2, 3].map(i => (
+                                <Col xs={24} md={8} key={i}>
+                                    <div className="news-skeleton-card">
+                                        <div className="skeleton-img" />
+                                        <div className="skeleton-title" />
+                                        <div className="skeleton-text" />
+                                        <div className="skeleton-text short" />
+                                        <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between' }}>
+                                            <div style={{ width: 60, height: 16, background: '#F1F5F9', borderRadius: 4 }} />
+                                            <div style={{ width: 80, height: 16, background: '#F1F5F9', borderRadius: 4 }} />
+                                        </div>
+                                    </div>
+                                </Col>
+                            ))
+                        )}
+                    </Row>
                 </div>
-            )}
+            </div>
 
             {/* ── FOOTER ── */}
             <AppFooter />

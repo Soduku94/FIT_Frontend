@@ -1,8 +1,11 @@
 import axios from 'axios';
 
+// Lấy URL từ biến môi trường, mặc định là localhost nếu không cấu hình
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 // Tạo một instance (bản sao) của axios với cấu hình mặc định
 const api = axios.create({
-    baseURL: 'http://localhost:5000/api',// Đường dẫn gốc của Backend
+    baseURL: `${BASE_URL}/api`,// Đường dẫn gốc của Backend
     headers: {
         'Content-Type': 'application/json',
     },

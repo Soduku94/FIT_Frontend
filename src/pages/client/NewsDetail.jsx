@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Typography, Spin, message, Divider, Avatar, Button, Tag, Space } from 'antd';
-import { CalendarOutlined, ArrowLeftOutlined, UserOutlined, ShareAltOutlined } from '@ant-design/icons';
+import { CalendarOutlined, ArrowLeftOutlined, UserOutlined, ShareAltOutlined, StarOutlined, StarFilled } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import AppFooter from '../../components/layout/AppFooter';
@@ -14,6 +14,8 @@ const NewsDetail = () => {
     const [news, setNews] = useState(null);
     const [loading, setLoading] = useState(true);
     const [scrollProgress, setScrollProgress] = useState(0);
+    const [isSaved, setIsSaved] = useState(false);
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -30,6 +32,13 @@ const NewsDetail = () => {
             try {
                 const response = await api.get(`/public/news/${id}`);
                 setNews(response.data.news || response.data);
+                
+                // Check if saved
+                const token = localStorage.getItem('token');
+                if (token) {
+                    const savedRes = await api.get(`/client/saved/${id}/check?type=news`);
+                    setIsSaved(savedRes.data.is_saved);
+                }
             } catch (error) {
                 message.error("Không thể tải chi tiết tin tức!");
                 navigate('/about');
@@ -41,6 +50,28 @@ const NewsDetail = () => {
         fetchDetail();
         return () => window.removeEventListener('scroll', handleScroll);
     }, [id, navigate]);
+
+    const handleToggleSave = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            message.warning("Vui lòng đăng nhập để lưu bài viết!");
+            return;
+        }
+
+        try {
+            setSaving(true);
+            const res = await api.post('/client/saved/toggle', {
+                resource_id: id,
+                resource_type: 'news'
+            });
+            setIsSaved(res.data.saved);
+            message.success(res.data.saved ? "Đã lưu vào danh sách đọc sau" : "Đã xóa khỏi danh sách lưu");
+        } catch (error) {
+            message.error("Không thể thực hiện tác vụ này");
+        } finally {
+            setSaving(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -85,6 +116,16 @@ const NewsDetail = () => {
                             <CalendarOutlined />
                             <span>{news.created_at}</span>
                         </div>
+                        <div className="w-1 h-1 bg-gray-300 rounded-full" />
+                        <Button 
+                            type={isSaved ? "primary" : "default"}
+                            icon={isSaved ? <StarFilled /> : <StarOutlined />}
+                            onClick={handleToggleSave}
+                            loading={saving}
+                            className={`rounded-full border-0 ${isSaved ? 'bg-blue-600 shadow-lg shadow-blue-200' : 'bg-gray-100 hover:bg-gray-200'}`}
+                        >
+                            {isSaved ? t('notifications.saved_btn') : t('notifications.save_btn')}
+                        </Button>
                     </div>
                 </div>
 
