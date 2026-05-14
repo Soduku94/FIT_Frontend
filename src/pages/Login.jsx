@@ -25,7 +25,8 @@ const Login = () => {
             message.success(`Chào mừng ${user.full_name} quay trở lại!`);
             navigate('/');
         } catch (error) {
-            message.error('Đăng nhập thất bại. Vui lòng kiểm tra lại!');
+            const errorMsg = error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại!';
+            message.error(errorMsg);
         } finally {
             setLoading(false);
         }

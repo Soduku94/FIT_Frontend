@@ -8,7 +8,7 @@ export default {
     extend: {},
   },
   corePlugins: {
-    preflight: false, // TẮT PREFLIGHT ĐỂ KHÔNG LỖI STYLE CỦA ANT DESIGN
+    preflight: false,
   },
   plugins: [],
 }
