@@ -408,7 +408,26 @@ const DocumentDetail = () => {
         const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
         let finalUrl = url.startsWith('http') ? url : `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
         if (isDownload) {
-            finalUrl += (finalUrl.includes('?') ? '&' : '?') + 'download=true';
+            // Nếu là URL tuyệt đối từ Supabase Cloud
+            if (url.startsWith('http')) {
+                try {
+                    // Trích xuất tên file gốc từ URL (bỏ phần prefix papers_xxxx_ hoặc datasets_xxxx_ chống trùng lặp)
+                    const filename = url.split('/').pop().split('?')[0];
+                    const parts = filename.split('_');
+                    let cleanFilename = filename;
+                    if (parts.length >= 3 && parts[1].length === 8) {
+                        // Lấy các phần từ index 2 trở đi để lấy tên nguyên bản của file
+                        cleanFilename = parts.slice(2).join('_');
+                    }
+                    // Truyền tham số download kèm tên file sạch cho Supabase CDN xử lý
+                    finalUrl += (finalUrl.includes('?') ? '&' : '?') + `download=${encodeURIComponent(cleanFilename)}`;
+                } catch (e) {
+                    finalUrl += (finalUrl.includes('?') ? '&' : '?') + 'download';
+                }
+            } else {
+                // Nếu là local, tiếp tục dùng download=true theo thiết lập phục vụ file của Flask
+                finalUrl += (finalUrl.includes('?') ? '&' : '?') + 'download=true';
+            }
         }
         return finalUrl;
     };

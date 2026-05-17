@@ -6,7 +6,8 @@ import {
     DashboardOutlined,
     FileTextOutlined,
     AppstoreOutlined,
-    LogoutOutlined, UserOutlined
+    LogoutOutlined, UserOutlined,
+    SettingOutlined
 } from '@ant-design/icons';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 
@@ -31,6 +32,7 @@ const AdminLayout = () => {
         { key: '/admin/categories', icon: <AppstoreOutlined />, label: 'Quản lý Danh mục' },
         { key: '/admin/documents', icon: <FileTextOutlined />, label: 'Duyệt Tài liệu' },
         { key: '/admin/users', icon: <UserOutlined />, label: 'Người dùng' },
+        { key: '/admin/settings', icon: <SettingOutlined />, label: 'Cấu hình hệ thống' },
     ];
 
     return (
