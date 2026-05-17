@@ -82,14 +82,20 @@ const Categories = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20 overflow-hidden">
-            {/* SIMPLE HERO SECTION */}
-            <div className="bg-gradient-to-r from-blue-700 to-indigo-800 py-20 px-6 text-center text-white">
-                <div className="max-w-4xl mx-auto animate-fade-in">
-                    <ReadOutlined style={{ fontSize: '40px', marginBottom: '16px', opacity: 0.9 }} />
-                    <Title level={1} className="text-white mb-4 m-0" style={{ fontWeight: 800 }}>
+            {/* MODERN SIMPLE HERO SECTION */}
+            <div className="bg-gradient-to-br from-blue-100 to-purple-100 border-b border-blue-200 py-16 px-6 relative overflow-hidden flex justify-center items-center">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+                <div className="absolute -top-24 -right-24 w-96 h-96 bg-white rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+                <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-200 rounded-full blur-3xl opacity-40 pointer-events-none"></div>
+
+                <div className="max-w-3xl w-full mx-auto relative z-10 animate-fade-in text-center">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white text-blue-600 mb-6 shadow-sm border border-blue-200">
+                        <ReadOutlined style={{ fontSize: '28px' }} />
+                    </div>
+                    <Title level={1} className="mb-4 m-0 tracking-tight text-gray-800" style={{ fontWeight: 800, fontSize: '2.2rem' }}>
                         Danh mục Chuyên ngành
                     </Title>
-                    <Paragraph className="text-blue-100 text-lg opacity-80 max-w-2xl mx-auto">
+                    <Paragraph className="text-gray-700 text-lg max-w-2xl mx-auto m-0 leading-relaxed">
                         Khám phá kho tri thức số được phân loại khoa học theo từng lĩnh vực nghiên cứu chuyên sâu của Khoa Công nghệ Thông tin.
                     </Paragraph>
                 </div>

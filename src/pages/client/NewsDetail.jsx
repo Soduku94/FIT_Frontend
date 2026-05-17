@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Typography, Spin, message, Divider, Avatar, Button, Tag, Space } from 'antd';
 import { CalendarOutlined, ArrowLeftOutlined, UserOutlined, ShareAltOutlined, StarOutlined, StarFilled } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 import AppFooter from '../../components/layout/AppFooter';
 
@@ -11,6 +12,7 @@ const { Title, Text, Paragraph } = Typography;
 const NewsDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [news, setNews] = useState(null);
     const [loading, setLoading] = useState(true);
     const [scrollProgress, setScrollProgress] = useState(0);
@@ -40,6 +42,7 @@ const NewsDetail = () => {
                     setIsSaved(savedRes.data.is_saved);
                 }
             } catch (error) {
+                console.error("Lỗi tải tin tức:", error);
                 message.error("Không thể tải chi tiết tin tức!");
                 navigate('/about');
             } finally {
@@ -67,6 +70,7 @@ const NewsDetail = () => {
             setIsSaved(res.data.saved);
             message.success(res.data.saved ? "Đã lưu vào danh sách đọc sau" : "Đã xóa khỏi danh sách lưu");
         } catch (error) {
+            console.error("Lỗi khi lưu:", error);
             message.error("Không thể thực hiện tác vụ này");
         } finally {
             setSaving(false);

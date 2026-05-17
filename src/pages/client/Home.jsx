@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Layout, Typography, Input, Card, Tag, Spin, message,
-    Row, Col, Empty, Button, Select, Space, Pagination, AutoComplete, Segmented, Badge, Divider
+    Row, Col, Empty, Button, Select, Space, Pagination, AutoComplete, Segmented, Badge, Divider, Avatar
 } from 'antd';
 import {
     SearchOutlined, FilePdfOutlined, DatabaseOutlined, EyeOutlined,
     CalendarOutlined, UserOutlined, ArrowRightOutlined, FileTextOutlined,
     TrophyOutlined, TeamOutlined, ReadOutlined, ThunderboltOutlined,
-    AppstoreOutlined, BarsOutlined
+    AppstoreOutlined, BarsOutlined, MailOutlined
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../services/api';
@@ -185,7 +185,9 @@ const Home = () => {
     const location = useLocation();
     const [documents, setDocuments] = useState([]);
     const [latestNews, setLatestNews] = useState([]);
+    const [lecturers, setLecturers] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [loadingLecturers, setLoadingLecturers] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [total, setTotal] = useState(0);
     const pageSize = 12;
@@ -232,7 +234,19 @@ const Home = () => {
         } catch {}
     };
 
-    useEffect(() => { fetchCategories(); fetchLatestNews(); }, []);
+    const fetchLecturers = async () => {
+        setLoadingLecturers(true);
+        try {
+            const res = await api.get('/public/lecturers');
+            setLecturers(res.data.lecturers);
+        } catch {
+            console.error('Không thể tải danh sách giảng viên!');
+        } finally {
+            setLoadingLecturers(false);
+        }
+    };
+
+    useEffect(() => { fetchCategories(); fetchLatestNews(); fetchLecturers(); }, []);
     useEffect(() => { fetchDocuments(activeTab, searchText, selectedCategory, selectedYear, sortBy, 1); }, [activeTab, searchText, selectedCategory, selectedYear, sortBy]);
 
     // Xử lý lọc theo danh mục từ URL (nếu có)
@@ -724,6 +738,78 @@ const Home = () => {
                             ))
                         )}
                     </Row>
+                </div>
+            </div>
+
+            {/* ── GIẢNG VIÊN NGHIÊN CỨU ── */}
+            <div style={{ background: '#F8FAFC', borderTop: '1px solid #E2E8F0', padding: '64px 24px' }}>
+                <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32, flexWrap: 'wrap', gap: 16 }}>
+                        <div>
+                            <Text style={{ color: '#3B82F6', fontWeight: 700, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>
+                                Đội ngũ chuyên gia
+                            </Text>
+                            <Title level={2} style={{ margin: 0, fontWeight: 800, color: '#1E293B', letterSpacing: '-0.5px' }}>
+                                Giảng viên & Nhà nghiên cứu
+                            </Title>
+                        </div>
+                    </div>
+
+                    {loadingLecturers ? (
+                        <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                            <Spin size="large" tip="Đang tải danh sách giảng viên..." />
+                        </div>
+                    ) : lecturers.length > 0 ? (
+                        <Row gutter={[20, 20]}>
+                            {lecturers.map((lecturer) => (
+                                <Col xs={24} sm={12} md={6} key={lecturer.id}>
+                                    <Card
+                                        hoverable
+                                        onClick={() => navigate(`/lecturer/${lecturer.id}`)}
+                                        style={{ 
+                                            borderRadius: 16, 
+                                            border: '1.5px solid #F1F5F9', 
+                                            overflow: 'hidden', 
+                                            cursor: 'pointer', 
+                                            transition: 'all 0.25s',
+                                            height: '100%'
+                                        }}
+                                        bodyStyle={{ padding: 20, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                                        onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 28px rgba(0,0,0,0.08)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
+                                        onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                                    >
+                                        <Avatar 
+                                            size={96} 
+                                            src={lecturer.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&h=400&q=80'} 
+                                            icon={<UserOutlined />}
+                                            style={{ border: '3px solid #EFF6FF', marginBottom: 16, boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}
+                                        />
+                                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                            <div>
+                                                <Title level={5} style={{ margin: '0 0 4px', fontWeight: 700, color: '#1E293B' }}>
+                                                    {lecturer.full_name}
+                                                </Title>
+                                                <Tag color="blue" style={{ borderRadius: 6, fontWeight: 700, border: 'none', fontSize: 10, textTransform: 'uppercase', marginBottom: 12 }}>
+                                                    {lecturer.academic_title || 'Giảng viên'}
+                                                </Tag>
+                                                <Paragraph style={{ fontSize: 13, color: '#64748B', lineHeight: 1.5, minHeight: 40, margin: '0 0 16px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                                    {lecturer.bio || 'Chuyên gia nghiên cứu và giảng dạy, nhiệt huyết hướng dẫn học viên.'}
+                                                </Paragraph>
+                                            </div>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#94A3B8', fontSize: 12, justifyContent: 'center' }}>
+                                                <MailOutlined style={{ color: '#3B82F6' }} />
+                                                <Text style={{ fontSize: 12, color: '#64748B', fontWeight: 500 }}>{lecturer.email}</Text>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </Col>
+                            ))}
+                        </Row>
+                    ) : (
+                        <div style={{ textAlign: 'center', padding: '40px 0', color: '#94A3B8' }}>
+                            Chưa có thông tin giảng viên nào trong hệ thống.
+                        </div>
+                    )}
                 </div>
             </div>
 

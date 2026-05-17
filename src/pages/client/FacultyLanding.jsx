@@ -48,11 +48,6 @@ const FacultyLanding = () => {
                         </Button>
                     </div>
                 </div>
-
-                {/* Scroll Down Indicator */}
-                {/* <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-50">
-                    <div className="w-1 h-12 rounded-full bg-gradient-to-b from-white to-transparent"></div>
-                </div> */}
             </section>
 
             {/* ACHIEVEMENTS SECTION - NUMBERS DON'T LIE */}
@@ -125,6 +120,112 @@ const FacultyLanding = () => {
                         </div>
                     </Col>
                 </Row>
+            </section>
+
+            {/* LECTURERS SECTION - MEMBERS OF THE FACULTY */}
+            <section className="py-24 bg-gray-50 border-t border-b border-gray-100">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="text-center mb-16">
+                        <div className="inline-block px-4 py-1 rounded-full bg-blue-50 border border-blue-100 mb-4">
+                            <span className="text-blue-600 font-bold text-xs uppercase tracking-widest">
+                                Đội ngũ giảng viên
+                            </span>
+                        </div>
+                        <Title level={2} className="text-3xl md:text-5xl font-black text-gray-900 mb-4">
+                            Ban Chủ Nhiệm & Giảng Viên Tiêu Biểu
+                        </Title>
+                        <Paragraph className="text-gray-500 text-lg max-w-2xl mx-auto">
+                            Những người thầy, cô tâm huyết, giàu kinh nghiệm, luôn đồng hành cùng sinh viên trên con đường chinh phục tri thức và sáng tạo công nghệ.
+                        </Paragraph>
+                    </div>
+
+                    <Row gutter={[32, 40]} justify="center">
+                        {[
+                            {
+                                name: "PGS. TS. Trần Xuân Tú",
+                                role: "Trưởng khoa Công nghệ Thông tin",
+                                email: "tutx@hanu.edu.vn",
+                                avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&h=400&q=80",
+                                desc: "Hơn 20 năm kinh nghiệm nghiên cứu và giảng dạy trong lĩnh vực Hệ thống nhúng và Trí tuệ nhân tạo.",
+                                linkedin: "https://linkedin.com",
+                                facebook: "https://facebook.com"
+                            },
+                            {
+                                name: "TS. Nguyễn Thị Minh",
+                                role: "Phó Trưởng khoa Công nghệ Thông tin",
+                                email: "minhnt@hanu.edu.vn",
+                                avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&h=400&q=80",
+                                desc: "Chuyên gia về Học máy, Xử lý ngôn ngữ tự nhiên và Khoa học dữ liệu, tu nghiệp tại CHLB Đức.",
+                                linkedin: "https://linkedin.com",
+                                facebook: "https://facebook.com"
+                            },
+                            {
+                                name: "TS. Lê Văn Huy",
+                                role: "Trưởng bộ môn Khoa học Máy tính",
+                                email: "huylv@hanu.edu.vn",
+                                avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&h=400&q=80",
+                                desc: "Nghiên cứu chuyên sâu về Công nghệ Blockchain, Phát triển Phần mềm An toàn và Hệ thống phân tán.",
+                                linkedin: "https://linkedin.com",
+                                facebook: "https://facebook.com"
+                            },
+                            {
+                                name: "TS. Phạm Ngọc Anh",
+                                role: "Trưởng bộ môn Công nghệ Phần mềm",
+                                email: "anhpn@hanu.edu.vn",
+                                avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&h=400&q=80",
+                                desc: "Chuyên gia Mạng máy tính, An toàn thông tin và Điện toán đám mây với nhiều chứng chỉ quốc tế uy tín.",
+                                linkedin: "https://linkedin.com",
+                                facebook: "https://facebook.com"
+                            }
+                        ].map((lecturer, index) => (
+                            <Col xs={24} sm={12} lg={6} key={index}>
+                                <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 hover:-translate-y-2 transition-all duration-300 flex flex-col h-full group">
+                                    {/* Image Wrapper */}
+                                    <div className="relative pt-[100%] overflow-hidden bg-gray-50">
+                                        <img 
+                                            src={lecturer.avatar} 
+                                            alt={lecturer.name}
+                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
+                                            <Space size={12}>
+                                                <a href={`mailto:${lecturer.email}`} className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white flex items-center justify-center transition-all animate-fade-in">
+                                                    <MailOutlined className="text-lg" />
+                                                </a>
+                                                <a href={lecturer.linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white flex items-center justify-center transition-all animate-fade-in">
+                                                    <LinkedinOutlined className="text-lg" />
+                                                </a>
+                                                <a href={lecturer.facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white flex items-center justify-center transition-all animate-fade-in">
+                                                    <FacebookOutlined className="text-lg" />
+                                                </a>
+                                            </Space>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Info Content */}
+                                    <div className="p-6 flex-grow flex flex-col justify-between">
+                                        <div>
+                                            <Title level={4} className="m-0 text-gray-800 font-bold mb-1 group-hover:text-blue-600 transition-colors">
+                                                {lecturer.name}
+                                            </Title>
+                                            <Text className="text-blue-600 font-semibold block text-sm mb-3">
+                                                {lecturer.role}
+                                            </Text>
+                                            <Paragraph className="text-gray-500 text-sm leading-relaxed mb-4">
+                                                {lecturer.desc}
+                                            </Paragraph>
+                                        </div>
+                                        
+                                        <div className="pt-4 border-t border-gray-100 flex items-center gap-2 text-gray-400 hover:text-blue-600 transition-colors">
+                                            <MailOutlined className="text-xs" />
+                                            <span className="text-xs font-medium">{lecturer.email}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Col>
+                        ))}
+                    </Row>
+                </div>
             </section>
 
             {/* MILESTONES - TIMELINE OF SUCCESS */}
